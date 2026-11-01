@@ -1,0 +1,36 @@
+{
+  "radius": {
+    "sm": {
+      "$type": "dimension",
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$description": "Inputs, tags, small controls."
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$description": "Cards, panels, images."
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$description": "Hero panels and large brand blocks."
+    },
+    "pill": {
+      "$type": "dimension",
+      "$value": {
+        "value": 999,
+        "unit": "px"
+      },
+      "$description": "Buttons and chips, echoing the wordmark's rounded strokes."
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "font": {
+    "display": {
+      "$type": "fontFamily",
+      "$value": [
+        "Poppins",
+        "Alexandria",
+        "Helvetica Neue",
+        "Arial",
+        "sans-serif"
+      ],
+      "$description": "Headings and the tagline. Latin glyphs use Poppins; Arabic falls through to Alexandria."
+    },
+    "body": {
+      "$type": "fontFamily",
+      "$value": [
+        "DM Sans",
+        "IBM Plex Sans Arabic",
+        "Helvetica Neue",
+        "Arial",
+        "sans-serif"
+      ],
+      "$description": "Running text. Latin: DM Sans; Arabic: IBM Plex Sans Arabic."
+    }
+  }
+}

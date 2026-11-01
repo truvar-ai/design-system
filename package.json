@@ -1,0 +1,22 @@
+{
+  "name": "truvar-design-system",
+  "private": true,
+  "description": "Truvar.ai design system monorepo: tokens, the @truvar-ai/design-system package and its docs.",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/truvar-ai/design-system.git" },
+  "packageManager": "pnpm@10.19.0",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --filter=showcase...",
+    "changeset": "changeset",
+    "version-packages": "changeset version"
+  },
+  "devDependencies": {
+    "@changesets/cli": "3.0.3",
+    "turbo": "2.11.8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}

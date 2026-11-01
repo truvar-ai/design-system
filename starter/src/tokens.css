@@ -1,0 +1,50 @@
+/* Truvar.ai design tokens — generated from tokens.json */
+:root {
+  --navy-900:#001250; --gold-300:#e0b96a; --gold-500:#c39a4c; --bronze-700:#916625;
+  --brand-field:#001250; --surface:#ffffff; --surface-alt:#f7f5f0;
+  --ink:#001250; --ink-muted:#4a5578; --accent:#916625;
+  --primary:#001250; --on-primary:#ffffff;
+  --border:#d9dce6; --border-strong:#6b7494; --focus-ring:#916625;
+  --success:#1f6f4a; --danger:#b3261e; --surface-raised:#ffffff;
+  /* Data visualisation: navy and gold lead; the rest are tested to stay distinct for common colour blindness */
+  --chart-1:#001250; --chart-2:#c39a4c; --chart-3:#6b7494; --chart-4:#1f6f4a; --chart-5:#9aa7d6; --chart-6:#b3261e;
+  --map-base:#ffffff; --map-empty:#eceae4; --map-stroke:#ffffff;
+  --chart-ink-1:#ffffff; --chart-ink-2:#001250; --chart-ink-3:#ffffff; --chart-ink-4:#ffffff; --chart-ink-5:#001250; --chart-ink-6:#ffffff;
+  --shadow-card:0 1px 2px rgba(0,18,80,.06),0 4px 16px rgba(0,18,80,.08);
+  --font-display:"Poppins","Alexandria","Helvetica Neue",Arial,sans-serif;  /* Latin glyphs use Poppins, Arabic falls through to Alexandria */
+  --font-body:"DM Sans","IBM Plex Sans Arabic","Helvetica Neue",Arial,sans-serif;  /* Latin: DM Sans, Arabic: IBM Plex Sans Arabic */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-10:40px; --space-16:64px;
+  --radius-sm:6px; --radius-md:12px; --radius-lg:24px; --radius-pill:999px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Neutral graphite dark: no blue cast, warm off-white text, gold as the accent */
+    --brand-field:#001250; --surface:#131416; --surface-alt:#1c1d20; --surface-raised:#232428;
+    --ink:#ebe9e4; --ink-muted:#a5a39d; --accent:#e0b96a;
+    --primary:#e0b96a; --on-primary:#131416;
+    --border:#2d2e32; --border-strong:#76777d; --focus-ring:#e0b96a;
+    --success:#6fd3a0; --danger:#ff8a80;
+    --shadow-card:0 1px 2px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.45);
+  --chart-1:#8ea2e8; --chart-2:#e0b96a; --chart-3:#a5a39d; --chart-4:#6fd3a0; --chart-5:#4a5a99; --chart-6:#ff8a80;
+  --map-base:#1c1d20; --map-empty:#26272b; --map-stroke:#131416;
+    --chart-ink-1:#131416; --chart-ink-2:#131416; --chart-ink-3:#131416; --chart-ink-4:#131416; --chart-ink-5:#ffffff; --chart-ink-6:#131416;
+    --chart-1:#8ea2e8; --chart-2:#e0b96a; --chart-3:#a5a39d; --chart-4:#6fd3a0; --chart-5:#4a5a99; --chart-6:#ff8a80;
+    --map-base:#1c1d20; --map-empty:#26272b; --map-stroke:#131416;
+    --chart-ink-1:#131416; --chart-ink-2:#131416; --chart-ink-3:#131416; --chart-ink-4:#131416; --chart-ink-5:#ffffff; --chart-ink-6:#131416;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  /* Neutral graphite dark: no blue cast, warm off-white text, gold as the accent */
+  --brand-field:#001250; --surface:#131416; --surface-alt:#1c1d20; --surface-raised:#232428;
+  --ink:#ebe9e4; --ink-muted:#a5a39d; --accent:#e0b96a;
+  --primary:#e0b96a; --on-primary:#131416;
+  --border:#2d2e32; --border-strong:#76777d; --focus-ring:#e0b96a;
+  --success:#6fd3a0; --danger:#ff8a80;
+  --shadow-card:0 1px 2px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.45);
+  --chart-1:#8ea2e8; --chart-2:#e0b96a; --chart-3:#a5a39d; --chart-4:#6fd3a0; --chart-5:#4a5a99; --chart-6:#ff8a80;
+  --map-base:#1c1d20; --map-empty:#26272b; --map-stroke:#131416;
+    --chart-ink-1:#131416; --chart-ink-2:#131416; --chart-ink-3:#131416; --chart-ink-4:#131416; --chart-ink-5:#ffffff; --chart-ink-6:#131416;
+  color-scheme: dark;
+}

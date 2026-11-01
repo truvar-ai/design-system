@@ -1,0 +1,89 @@
+{
+  "name": "@truvar-ai/design-system",
+  "version": "0.7.0",
+  "description": "Truvar.ai design system for React: accessible components on React Aria with Arabic and RTL support, international phone and country inputs, charts, maps, voice AI and Truvar OS components.",
+  "keywords": [
+    "design-system",
+    "react",
+    "nextjs",
+    "react-aria",
+    "components",
+    "rtl",
+    "arabic",
+    "accessibility",
+    "phone-input",
+    "charts",
+    "voice-ai",
+    "truvar"
+  ],
+  "homepage": "https://design-system.truvar.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/truvar-ai/design-system.git",
+    "directory": "packages/design-system"
+  },
+  "bugs": "https://github.com/truvar-ai/design-system/issues",
+  "license": "MIT",
+  "author": "Truvar.ai <business@truvar.ai>",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "logos",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./brand": "./dist/brand.js",
+    "./icons": "./dist/icons.js",
+    "./charts": "./dist/charts.js",
+    "./voice": "./dist/voice.js",
+    "./os": "./dist/os.js",
+    "./tokens": "./dist/tokens.js",
+    "./tokens.json": "./dist/tokens.json",
+    "./tokens.css": "./dist/tokens.css",
+    "./styles.css": "./dist/styles.css",
+    "./charts/styles.css": "./dist/charts.css",
+    "./voice/styles.css": "./dist/voice.css",
+    "./os/styles.css": "./dist/os.css",
+    "./logos/*": "./logos/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/build-css.mjs",
+    "dev": "tsup --watch src --onSuccess \"node scripts/build-css.mjs\"",
+    "build:geo": "node scripts/build-geo.mjs"
+  },
+  "peerDependencies": {
+    "react": "^18.3.0 || ^19.0.0",
+    "react-dom": "^18.3.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@internationalized/date": "^3.12.4",
+    "@xyflow/react": "12.12.0",
+    "country-flag-icons": "1.6.20",
+    "d3-geo": "3.1.1",
+    "d3-selection": "3.0.0",
+    "d3-zoom": "3.0.0",
+    "libphonenumber-js": "1.13.15",
+    "react-aria-components": "^1.22.1",
+    "react-is": "18.3.1",
+    "recharts": "3.10.1",
+    "topojson-client": "3.1.0",
+    "wavesurfer.js": "7.12.12"
+  },
+  "devDependencies": {
+    "@truvar-ai/tokens-source": "workspace:*",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "topojson-server": "3.0.1",
+    "tsup": "8.5.1",
+    "typescript": "5.9.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

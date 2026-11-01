@@ -1,0 +1,32 @@
+{
+  "name": "truvar-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@internationalized/date": "^3.12.4",
+    "@xyflow/react": "12.12.0",
+    "country-flag-icons": "1.6.20",
+    "d3-geo": "3.1.1",
+    "d3-selection": "3.0.0",
+    "d3-zoom": "3.0.0",
+    "esbuild": "^0.28.2",
+    "libphonenumber-js": "1.13.15",
+    "react": "^18.3.1",
+    "react-aria-components": "^1.22.1",
+    "react-dom": "^18.3.1",
+    "react-is": "18.3.1",
+    "recharts": "3.10.1",
+    "topojson-client": "3.1.0",
+    "wavesurfer.js": "7.12.12"
+  },
+  "devDependencies": {
+    "topojson-server": "3.0.1"
+  }
+}

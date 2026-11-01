@@ -1,0 +1,12 @@
+{
+  "name": "@truvar-ai/tokens-source",
+  "private": true,
+  "description": "Source of truth for Truvar design tokens (DTCG 2025.10). Builds the outputs every platform uses.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "style-dictionary": "5.6.1"
+  }
+}

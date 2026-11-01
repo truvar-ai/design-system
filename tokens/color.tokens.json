@@ -1,0 +1,809 @@
+{
+  "color": {
+    "brand": {
+      "$description": "Raw brand colours. Same in both themes.",
+      "navy-900": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Truvar Navy, sampled from the wordmark. The brand's anchor colour."
+      },
+      "gold-300": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.8784,
+            0.7255,
+            0.4157
+          ],
+          "hex": "#e0b96a"
+        },
+        "$description": "Truvar Gold, the highlight of the logo's metallic gradient. Fills and text on navy; never text on white."
+      },
+      "gold-500": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7647,
+            0.6039,
+            0.298
+          ],
+          "hex": "#c39a4c"
+        },
+        "$description": "Gold mid-tone. Decorative fills only, never text on light surfaces."
+      },
+      "bronze-700": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5686,
+            0.4,
+            0.1451
+          ],
+          "hex": "#916625"
+        },
+        "$description": "Truvar Bronze, the shadow of the gold gradient. Small accents and icons."
+      }
+    },
+    "semantic": {
+      "$description": "Role colours. Light value in $value, dark value in $extensions.\"ai.truvar.modes\".dark.",
+      "brand-field": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Large navy brand blocks (covers, hero bands)."
+      },
+      "surface": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Page background.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      },
+      "surface-alt": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9686,
+            0.9608,
+            0.9412
+          ],
+          "hex": "#f7f5f0"
+        },
+        "$description": "Alternate sections, cards and table stripes on `surface`.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.1098,
+                0.1137,
+                0.1255
+              ],
+              "hex": "#1c1d20"
+            }
+          }
+        }
+      },
+      "ink": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Headlines and body text on `surface` and `surface-alt`.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.9216,
+                0.9137,
+                0.8941
+              ],
+              "hex": "#ebe9e4"
+            }
+          }
+        }
+      },
+      "ink-muted": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.2902,
+            0.3333,
+            0.4706
+          ],
+          "hex": "#4a5578"
+        },
+        "$description": "Secondary text, captions and metadata.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.6471,
+                0.6392,
+                0.6157
+              ],
+              "hex": "#a5a39d"
+            }
+          }
+        }
+      },
+      "accent": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5686,
+            0.4,
+            0.1451
+          ],
+          "hex": "#916625"
+        },
+        "$description": "Accent text, links and eyebrow labels.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.8784,
+                0.7255,
+                0.4157
+              ],
+              "hex": "#e0b96a"
+            }
+          }
+        }
+      },
+      "primary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Primary button and selected-state fills. Text on it is `on-primary`.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.8784,
+                0.7255,
+                0.4157
+              ],
+              "hex": "#e0b96a"
+            }
+          }
+        }
+      },
+      "on-primary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Text and icons on `primary`.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      },
+      "border": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.851,
+            0.8627,
+            0.902
+          ],
+          "hex": "#d9dce6"
+        },
+        "$description": "Decorative hairlines and card outlines. Not for control borders.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.1765,
+                0.1804,
+                0.1961
+              ],
+              "hex": "#2d2e32"
+            }
+          }
+        }
+      },
+      "border-strong": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4196,
+            0.4549,
+            0.5804
+          ],
+          "hex": "#6b7494"
+        },
+        "$description": "Input and control borders.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.4627,
+                0.4667,
+                0.4902
+              ],
+              "hex": "#76777d"
+            }
+          }
+        }
+      },
+      "focus-ring": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5686,
+            0.4,
+            0.1451
+          ],
+          "hex": "#916625"
+        },
+        "$description": "2px solid focus outline with a 2px offset.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.8784,
+                0.7255,
+                0.4157
+              ],
+              "hex": "#e0b96a"
+            }
+          }
+        }
+      },
+      "success": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.1216,
+            0.4353,
+            0.2902
+          ],
+          "hex": "#1f6f4a"
+        },
+        "$description": "Success text and icons. Always paired with a word or icon.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.4353,
+                0.8275,
+                0.6275
+              ],
+              "hex": "#6fd3a0"
+            }
+          }
+        }
+      },
+      "danger": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.702,
+            0.149,
+            0.1176
+          ],
+          "hex": "#b3261e"
+        },
+        "$description": "Error text and icons. Always paired with a word or icon.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                1,
+                0.5412,
+                0.502
+              ],
+              "hex": "#ff8a80"
+            }
+          }
+        }
+      },
+      "surface-raised": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Floating layers: menus, popovers, dialogs.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.1373,
+                0.1412,
+                0.1569
+              ],
+              "hex": "#232428"
+            }
+          }
+        }
+      }
+    },
+    "chart": {
+      "$description": "Data visualisation series and their label colours.",
+      "chart-1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Data series 1. Navy and gold lead; the rest stay distinct for common colour blindness.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.5569,
+                0.6353,
+                0.9098
+              ],
+              "hex": "#8ea2e8"
+            }
+          }
+        }
+      },
+      "chart-2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7647,
+            0.6039,
+            0.298
+          ],
+          "hex": "#c39a4c"
+        },
+        "$description": "Data series 2. Navy and gold lead; the rest stay distinct for common colour blindness.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.8784,
+                0.7255,
+                0.4157
+              ],
+              "hex": "#e0b96a"
+            }
+          }
+        }
+      },
+      "chart-3": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4196,
+            0.4549,
+            0.5804
+          ],
+          "hex": "#6b7494"
+        },
+        "$description": "Data series 3. Navy and gold lead; the rest stay distinct for common colour blindness.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.6471,
+                0.6392,
+                0.6157
+              ],
+              "hex": "#a5a39d"
+            }
+          }
+        }
+      },
+      "chart-4": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.1216,
+            0.4353,
+            0.2902
+          ],
+          "hex": "#1f6f4a"
+        },
+        "$description": "Data series 4. Navy and gold lead; the rest stay distinct for common colour blindness.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.4353,
+                0.8275,
+                0.6275
+              ],
+              "hex": "#6fd3a0"
+            }
+          }
+        }
+      },
+      "chart-5": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.6039,
+            0.6549,
+            0.8392
+          ],
+          "hex": "#9aa7d6"
+        },
+        "$description": "Data series 5. Navy and gold lead; the rest stay distinct for common colour blindness.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.2902,
+                0.3529,
+                0.6
+              ],
+              "hex": "#4a5a99"
+            }
+          }
+        }
+      },
+      "chart-6": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.702,
+            0.149,
+            0.1176
+          ],
+          "hex": "#b3261e"
+        },
+        "$description": "Data series 6. Navy and gold lead; the rest stay distinct for common colour blindness.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                1,
+                0.5412,
+                0.502
+              ],
+              "hex": "#ff8a80"
+            }
+          }
+        }
+      },
+      "chart-ink-1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Label colour on a `chart-1` fill.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      },
+      "chart-ink-2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Label colour on a `chart-2` fill.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      },
+      "chart-ink-3": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Label colour on a `chart-3` fill.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      },
+      "chart-ink-4": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Label colour on a `chart-4` fill.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      },
+      "chart-ink-5": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.0706,
+            0.3137
+          ],
+          "hex": "#001250"
+        },
+        "$description": "Label colour on a `chart-5` fill.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                1,
+                1,
+                1
+              ],
+              "hex": "#ffffff"
+            }
+          }
+        }
+      },
+      "chart-ink-6": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Label colour on a `chart-6` fill.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      }
+    },
+    "map": {
+      "$description": "Choropleth map grounds.",
+      "map-base": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Countries with data at the lowest step.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.1098,
+                0.1137,
+                0.1255
+              ],
+              "hex": "#1c1d20"
+            }
+          }
+        }
+      },
+      "map-empty": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9255,
+            0.9176,
+            0.8941
+          ],
+          "hex": "#eceae4"
+        },
+        "$description": "Countries with no data.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.149,
+                0.1529,
+                0.1686
+              ],
+              "hex": "#26272b"
+            }
+          }
+        }
+      },
+      "map-stroke": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$description": "Country borders.",
+        "$extensions": {
+          "ai.truvar.modes": {
+            "dark": {
+              "colorSpace": "srgb",
+              "components": [
+                0.0745,
+                0.0784,
+                0.0863
+              ],
+              "hex": "#131416"
+            }
+          }
+        }
+      }
+    }
+  }
+}
