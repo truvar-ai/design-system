@@ -4,5 +4,6 @@ next-env.d.ts
 # One route per component page, written by scripts/routes.mjs before dev and build
 app/(en)/docs/*/
 app/(ar)/ar/docs/*/
-!app/(en)/docs/[slug]/
-!app/(ar)/ar/docs/[slug]/
+# The guides stay in the repo. Brackets are escaped: unescaped, [slug] means "one of s, l, u, g"
+!app/(en)/docs/\[slug\]/
+!app/(ar)/ar/docs/\[slug\]/
