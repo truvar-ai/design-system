@@ -1,6 +1,6 @@
 {
   "name": "@truvar-ai/design-system",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Truvar.ai design system for React: accessible components on React Aria with Arabic and RTL support, international phone and country inputs, charts, maps, voice AI and Truvar OS components.",
   "keywords": [
     "design-system",
