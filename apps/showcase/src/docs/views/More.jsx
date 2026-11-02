@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+import { useState } from "react";
 import { parseColor } from "react-aria-components";
 import {
   StatTile, Card, Avatar, BrandAvatar, Badge, Button, Meter, Link, ColorPickerPanel, ColorWheel, ColorSwatch, DropZone, FileTrigger,

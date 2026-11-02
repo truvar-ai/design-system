@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from "react";
+"use client";
+import { useState, useMemo } from "react";
 import {
-  WorldMap, useMapCountries, countryName, Flag, ComboBox, Item, Badge, Select, Sparkline, useFormat, Button,
-} from "../../ds.js";
-import * as Icon from "@truvar-ai/design-system/icons";
+  WorldMap, useMapCountries, Flag, ComboBox, Item, Badge, Select, Sparkline, useFormat, } from "../../ds.js";
 import { useTr, useLang } from "../i18n.jsx";
 import { Spec, ViewHeader } from "../ui.jsx";
 

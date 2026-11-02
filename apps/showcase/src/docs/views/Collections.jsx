@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { useTr } from "../i18n.jsx";
 import { ViewHeader } from "../ui.jsx";
 import { VirtualListSpec, VirtualGridSpec, MasonrySpec } from "./Phase2.jsx";

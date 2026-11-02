@@ -1,8 +1,9 @@
 // @truvar/ui — the rest of the React Aria set, plus brand components React Aria leaves to each design system.
-import React, { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import * as RAC from "react-aria-components";
 import * as Icon from "../icons/icons.jsx";
 import { Button, Checkbox, OrbitMark, TextField, useMessages } from "./index.jsx";
+import { numberFormat, relativeTimeFormat } from "./format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 
@@ -10,11 +11,11 @@ const M = {
   en: { close: "Close", dismiss: "Dismiss", prev: "Previous page", next: "Next page", page: (n) => `Page ${n}`,
         pagination: "Pagination", drag: "Drag to reorder", expand: "Expand", cancel: "Cancel",
         typeToConfirm: (w) => `Type ${w} to confirm`, notifications: "Notifications", markRead: "Mark all as read",
-        nothingNew: "You're all caught up.", from: "From", to: "To", hue: "Hue", color: "Colour" },
+        nothingNew: "You're all caught up.", account: "Account", back: "Back", openFull: "Open full page", viewAll: "View all", from: "From", to: "To", hue: "Hue", color: "Colour" },
   ar: { close: "إغلاق", dismiss: "تجاهل", prev: "الصفحة السابقة", next: "الصفحة التالية", page: (n) => `الصفحة ${n}`,
         pagination: "التنقل بين الصفحات", drag: "اسحب لإعادة الترتيب", expand: "توسيع", cancel: "إلغاء",
         typeToConfirm: (w) => `اكتب ${w} للتأكيد`, notifications: "الإشعارات", markRead: "تحديد الكل كمقروء",
-        nothingNew: "لا يوجد جديد.", from: "من", to: "إلى", hue: "درجة اللون", color: "اللون" },
+        nothingNew: "لا يوجد جديد.", account: "الحساب", back: "رجوع", openFull: "فتح في صفحة كاملة", viewAll: "عرض الكل", from: "من", to: "إلى", hue: "درجة اللون", color: "اللون" },
 };
 export function useM() {
   const { locale } = RAC.useLocale();
@@ -23,10 +24,10 @@ export function useM() {
 export function useFormat() {
   const { locale } = RAC.useLocale();
   return {
-    number: (n, o) => new Intl.NumberFormat(locale, o).format(n),
-    money: (n) => new Intl.NumberFormat(locale, { style: "currency", currency: "EGP", maximumFractionDigits: 0 }).format(n),
-    moneyShort: (n) => new Intl.NumberFormat(locale, { style: "currency", currency: "EGP", notation: "compact", maximumFractionDigits: 1 }).format(n),
-    relative: (days) => new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(-days, "day"),
+    number: (n, o) => numberFormat(locale, o).format(n),
+    money: (n) => numberFormat(locale, { style: "currency", currency: "EGP", maximumFractionDigits: 0 }).format(n),
+    moneyShort: (n) => numberFormat(locale, { style: "currency", currency: "EGP", notation: "compact", maximumFractionDigits: 1 }).format(n),
+    relative: (days) => relativeTimeFormat(locale, { numeric: "auto" }).format(-days, "day"),
     locale,
   };
 }
@@ -177,7 +178,7 @@ export function DateRangePicker({ label, description, ...props }) {
       </RAC.Group>
       <Desc>{description}</Desc>
       <FieldError />
-      <RAC.Popover className="tv-popover" offset={6} style={{ maxHeight: "none" }}>
+      <RAC.Popover className="tv-popover tv-popover--date" offset={6} placement="bottom end">
         <RAC.Dialog className="tv-focus" aria-label={m.chooseDate}>
           <RAC.RangeCalendar className="tv-calendar tv-range">
             <CalendarHeader />
@@ -250,15 +251,21 @@ export function GridListItem({ children, textValue, actions, ...props }) {
 }
 
 /* Command menu: Autocomplete = search field + filtered menu, focus stays in the field */
-export function CommandMenu({ label, placeholder, items, onAction, children, renderEmpty }) {
+// onCancel adds a Cancel button after the field (phones, full-screen search). The keyboard shows a Search key.
+export function CommandMenu({ label, placeholder, items, onAction, children, renderEmpty, onCancel, cancelLabel }) {
   const { contains } = RAC.useFilter({ sensitivity: "base" });
+  const m = useM();
   return (
     <div className="tv-command">
       <RAC.Autocomplete filter={contains}>
-        <RAC.SearchField aria-label={label} className="tv-command-search" autoFocus>
-          <Icon.Search className="tv-search-icon" />
-          <RAC.Input className="tv-input" placeholder={placeholder} dir="auto" />
-        </RAC.SearchField>
+        <div className="tv-command-bar">
+          <RAC.SearchField aria-label={label} className="tv-command-search" autoFocus>
+            <Icon.Search className="tv-search-icon" />
+            <RAC.Input className="tv-input" placeholder={placeholder} dir="auto"
+              enterKeyHint="search" autoCapitalize="off" autoCorrect="off" autoComplete="off" spellCheck={false} />
+          </RAC.SearchField>
+          {onCancel && <RAC.Button className="tv-command-cancel" onPress={onCancel}>{cancelLabel ?? m.cancel}</RAC.Button>}
+        </div>
         <RAC.Menu items={items} onAction={onAction} className="tv-listbox tv-command-list"
           renderEmptyState={renderEmpty}>
           {children}
@@ -537,38 +544,213 @@ export function Skeleton({ lines = 3, avatar }) {
 }
 
 /* Notification centre: bell button + popover list (GridList) */
-export function NotificationCenter({ items, onMarkAllRead, onOpenItem, label }) {
+/* Notifications. An item: { id, icon, title, time, unread, detail? }.
+   detail (optional) makes it open a reading view: { from, avatar, subject, preview, body, actions: [{ label, onPress(close), variant }], href, hrefLabel }.
+   href is the full-page version (an inbox route); the panel offers "Open full page". */
+export function NotificationList({ items, onAction, currentId, label, className }) {
+  const m = useM();
+  return (
+    <RAC.GridList aria-label={label ?? m.notifications} items={items} className={cx("tv-notif-list", className)} onAction={onAction}
+      renderEmptyState={() => <div className="tv-empty-mini">{m.nothingNew}</div>}>
+      {(n) => (
+        <RAC.GridListItem id={n.id} textValue={n.title} className={cx("tv-notif", n.unread && "is-unread", n.id === currentId && "is-current")}>
+          <span className="tv-notif-icon">{n.icon}</span>
+          <span className="tv-notif-text">
+            <span className="tv-notif-title">{n.title}</span>
+            {n.detail?.preview && <span className="tv-notif-preview">{n.detail.preview}</span>}
+            <span className="tv-desc">{n.time}</span>
+          </span>
+          {n.unread && <span className="tv-unread-dot" aria-hidden="true" />}
+          {n.detail && <Icon.ChevronRight className="tv-notif-chev" aria-hidden="true" />}
+        </RAC.GridListItem>
+      )}
+    </RAC.GridList>
+  );
+}
+
+// The reading view for one notification: who, what, the full message and what you can do about it
+export function NotificationDetail({ item, onBack, close, showFullPage = true, headingLevel = 3 }) {
+  const m = useM();
+  const d = item.detail ?? {};
+  return (
+    <article className="tv-notif-detail" aria-labelledby={`nd-${item.id}`}>
+      {onBack && (
+        <RAC.Button className="tv-notif-back" onPress={onBack} autoFocus>
+          <Icon.ChevronLeft className="tv-notif-back-icon" aria-hidden="true" />{m.back}
+        </RAC.Button>
+      )}
+      <div className="tv-notif-detail-head">
+        <span className="tv-notif-icon">{d.avatar ?? item.icon}</span>
+        <div className="tv-notif-text">
+          <RAC.Heading level={headingLevel} id={`nd-${item.id}`} className="tv-notif-detail-title">{d.subject ?? item.title}</RAC.Heading>
+          <span className="tv-desc">{d.from ? <>{d.from} · {item.time}</> : item.time}</span>
+        </div>
+      </div>
+      {d.body && <div className="tv-notif-body">{d.body}</div>}
+      {(d.actions?.length > 0 || (showFullPage && d.href)) && (
+        <div className="tv-notif-detail-actions">
+          {d.actions?.map((a, i) => <Button key={i} size="sm" variant={a.variant ?? (i === 0 ? "primary" : "secondary")} onPress={() => a.onPress?.(close)}>{a.label}</Button>)}
+          {showFullPage && d.href && (
+            <RAC.Link href={d.href} className="tv-btn tv-btn--sm tv-btn--ghost" onPress={() => close?.()}>
+              {d.hrefLabel ?? m.openFull}<Icon.Maximize aria-hidden="true" />
+            </RAC.Link>
+          )}
+        </div>
+      )}
+    </article>
+  );
+}
+
+// Phones get a bottom sheet instead of a popover hanging off the bell
+const PHONE = "(max-width: 640px)";
+function useIsPhone() {
+  return useSyncExternalStore(
+    (cb) => { const q = window.matchMedia(PHONE); q.addEventListener("change", cb); return () => q.removeEventListener("change", cb); },
+    () => window.matchMedia(PHONE).matches,
+    () => false,
+  );
+}
+
+// viewAllHref adds a "View all" link under the list, to a full inbox page
+export function NotificationCenter({ items, onMarkAllRead, onOpenItem, label, viewAllHref, viewAllLabel }) {
   const m = useM();
   const unread = items.filter((i) => i.unread).length;
   const f = useFormat();
+  const phone = useIsPhone();
+  const [openId, setOpenId] = useState(null);
+  const open = items.find((n) => n.id === openId);
+  // Back to the list puts focus on the row you came from
+  const back = () => {
+    const id = openId;
+    setOpenId(null);
+    requestAnimationFrame(() => document.querySelector(`.tv-notif-dialog [data-key="${id}"]`)?.focus());
+  };
+  const body = (close) => (
+    <>
+      {phone && <span className="tv-sheet-handle" aria-hidden="true" />}
+      {open ? (
+        <NotificationDetail item={open} close={close} onBack={back} />
+      ) : (
+        <>
+          <div className="tv-notif-head">
+            <RAC.Heading slot="title" className="tv-popover-title">{m.notifications}</RAC.Heading>
+            <div className="tv-notif-actions">
+              {unread > 0 && <Button variant="ghost" size="sm" onPress={onMarkAllRead}>{m.markRead}</Button>}
+              {phone && <RAC.Button className="tv-icon-btn" aria-label={m.close} onPress={close}><Icon.X /></RAC.Button>}
+            </div>
+          </div>
+          <NotificationList items={items}
+            onAction={(id) => {
+              onOpenItem?.(id);
+              if (items.find((n) => n.id === id)?.detail) setOpenId(id);
+              else if (phone) close();
+            }} />
+          {viewAllHref && (
+            <div className="tv-notif-foot">
+              <RAC.Link href={viewAllHref} className="tv-notif-all" onPress={() => close()}>{viewAllLabel ?? m.viewAll}</RAC.Link>
+            </div>
+          )}
+        </>
+      )}
+    </>
+  );
   return (
-    <RAC.DialogTrigger>
+    <RAC.DialogTrigger onOpenChange={(o) => { if (!o) setOpenId(null); }}>
       <RAC.Button className="tv-icon-btn tv-bell" aria-label={`${label ?? m.notifications}${unread ? ` (${f.number(unread)})` : ""}`}>
         <Icon.Bell />
         {unread > 0 && <span className="tv-bell-count" aria-hidden="true">{f.number(unread)}</span>}
       </RAC.Button>
-      <RAC.Popover className="tv-popover tv-notif-pop" placement="bottom end" offset={8}>
-        <RAC.Dialog className="tv-notif-dialog" aria-label={m.notifications}>
-          <div className="tv-notif-head">
-            <RAC.Heading slot="title" className="tv-popover-title">{m.notifications}</RAC.Heading>
-            {unread > 0 && <Button variant="ghost" size="sm" onPress={onMarkAllRead}>{m.markRead}</Button>}
-          </div>
-          <RAC.GridList aria-label={m.notifications} items={items} className="tv-notif-list" onAction={onOpenItem}
-            renderEmptyState={() => <div className="tv-empty-mini">{m.nothingNew}</div>}>
-            {(n) => (
-              <RAC.GridListItem id={n.id} textValue={n.title} className={cx("tv-notif", n.unread && "is-unread")}>
-                <span className="tv-notif-icon">{n.icon}</span>
-                <span className="tv-notif-text">
-                  <span className="tv-notif-title">{n.title}</span>
-                  <span className="tv-desc">{n.time}</span>
-                </span>
-                {n.unread && <span className="tv-unread-dot" aria-hidden="true" />}
-              </RAC.GridListItem>
-            )}
-          </RAC.GridList>
-        </RAC.Dialog>
-      </RAC.Popover>
+      {phone ? (
+        <RAC.ModalOverlay isDismissable className="tv-overlay">
+          <RAC.Modal className="tv-modal tv-notif-sheet">
+            <RAC.Dialog className="tv-notif-dialog" aria-label={m.notifications}>{({ close }) => body(close)}</RAC.Dialog>
+          </RAC.Modal>
+        </RAC.ModalOverlay>
+      ) : (
+        <RAC.Popover className="tv-popover tv-notif-pop" placement="bottom end" offset={8}>
+          <RAC.Dialog className="tv-notif-dialog" aria-label={m.notifications}>{({ close }) => body(close)}</RAC.Dialog>
+        </RAC.Popover>
+      )}
     </RAC.DialogTrigger>
+  );
+}
+
+/* User menu: who's signed in, and the account actions.
+   user: { name, email, src, role }. items: [{ id, label, icon, shortcut, danger, href, desktopOnly } | { separator: true }].
+   desktopOnly items (keyboard shortcuts and the like) are left out of the phone sheet.
+   compact shows only the avatar (small screens). Phones get a bottom sheet, like notifications. */
+export function UserMenu({ user, items, onAction, compact = false, label }) {
+  const m = useM();
+  const phone = useIsPhone();
+  const trigger = (
+    <RAC.Button className={cx("tv-usermenu-btn", compact && "is-compact")} aria-label={label ?? `${m.account}: ${user.name}`}>
+      <Avatar name={user.name} src={user.src} size={compact ? 32 : 34} />
+      {!compact && (
+        <span className="tv-usermenu-text">
+          <span className="tv-usermenu-name">{user.name}</span>
+          <span className="tv-usermenu-email" dir="ltr">{user.email}</span>
+        </span>
+      )}
+      {!compact && <Icon.ChevronDown className="tv-usermenu-chev" />}
+    </RAC.Button>
+  );
+  const head = (
+    <div className="tv-usermenu-head">
+      {/* The role sits on the photo's bottom edge, like a name tag */}
+      <span className="tv-usermenu-photo">
+        <Avatar name={user.name} src={user.src} size={phone ? 72 : 52} />
+        {user.role && <span className="tv-usermenu-role">{user.role}</span>}
+      </span>
+      <span className="tv-usermenu-text">
+        <span className="tv-usermenu-name">{user.name}</span>
+        <span className="tv-usermenu-email" dir="ltr">{user.email}</span>
+      </span>
+    </div>
+  );
+  const menu = (close) => (
+    <RAC.Menu className="tv-listbox tv-usermenu-list" aria-label={m.account} autoFocus={phone ? false : undefined}
+      onAction={(id) => { close?.(); onAction?.(id); }}>
+      {items.filter((it) => !(phone && it.desktopOnly)).map((it, i) => it.separator
+        ? <RAC.Separator key={"s" + i} className="tv-sep" />
+        : (
+          <RAC.MenuItem key={it.id} id={it.id} href={it.href} textValue={it.label} className={cx("tv-item", it.danger && "tv-item--danger")}>
+            {it.icon}<span className="tv-item-text">{it.label}</span>
+            {/* Shortcuts mean nothing without a keyboard */}
+            {it.shortcut && !phone && <kbd className="tv-kbd" dir="ltr">{it.shortcut}</kbd>}
+            {phone && it.href && <Icon.ChevronRight className="tv-usermenu-go tv-flip" />}
+          </RAC.MenuItem>
+        ))}
+    </RAC.Menu>
+  );
+  if (phone) {
+    return (
+      <RAC.DialogTrigger>
+        {trigger}
+        <RAC.ModalOverlay isDismissable className="tv-overlay">
+          <RAC.Modal className="tv-modal tv-usermenu-sheet">
+            <RAC.Dialog className="tv-usermenu-dialog" aria-label={m.account}>
+              {({ close }) => (
+                <>
+                  <span className="tv-sheet-handle" aria-hidden="true" />
+                  <RAC.Button className="tv-icon-btn tv-usermenu-close" aria-label={m.close} onPress={close}><Icon.X /></RAC.Button>
+                  {head}
+                  {menu(close)}
+                </>
+              )}
+            </RAC.Dialog>
+          </RAC.Modal>
+        </RAC.ModalOverlay>
+      </RAC.DialogTrigger>
+    );
+  }
+  return (
+    <RAC.MenuTrigger>
+      {trigger}
+      <RAC.Popover className="tv-popover tv-usermenu-pop" placement="bottom end" offset={8}>
+        {head}
+        {menu()}
+      </RAC.Popover>
+    </RAC.MenuTrigger>
   );
 }
 
@@ -592,10 +774,15 @@ export function StatTile({ label, value, delta, deltaLabel, trend = "up", good =
   );
 }
 const AV_TONES = ["navy", "bronze", "slate", "green"];
-export function Avatar({ name, size = 32, tone }) {
+export function Avatar({ name, size = 32, tone, src }) {
+  const [broken, setBroken] = useState(false);
   const initials = /[\u0600-\u06FF]/.test(name) ? name.trim()[0] : name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("");
   const t = tone ?? AV_TONES[[...name].reduce((a, ch) => a + ch.charCodeAt(0), 0) % AV_TONES.length];
-  return <span className={cx("tv-avatar-i", `is-${t}`)} style={{ width: size, height: size, fontSize: size * 0.38 }} title={name}>{initials}</span>;
+  return (
+    <span className={cx("tv-avatar-i", `is-${t}`, src && !broken && "has-photo")} style={{ width: size, height: size, fontSize: size * 0.38 }} title={name}>
+      {src && !broken ? <img src={src} alt="" onError={() => setBroken(true)} /> : initials}
+    </span>
+  );
 }
 export function EmptyState({ title, children, action, icon }) {
   return (

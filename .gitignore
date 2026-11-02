@@ -5,5 +5,3 @@ build/
 *.log
 .DS_Store
 .env*
-starter/node_modules/
-starter/dist/

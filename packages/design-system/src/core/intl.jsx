@@ -1,5 +1,5 @@
 // International components: CountryPicker, PhoneField, LanguageSelect.
-import React, { useState, useRef, useMemo, useId } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import * as RAC from "react-aria-components";
 import { AsYouType, parsePhoneNumberFromString, validatePhoneNumberLength, getExampleNumber } from "libphonenumber-js/max";
 import examples from "libphonenumber-js/mobile/examples";
@@ -117,7 +117,6 @@ export function PhoneField({ label, description, defaultCountry = "EG", isRequir
   const [text, setText] = useState("");
   const [touched, setTouched] = useState(false);
   const inputRef = useRef(null);
-  const descId = useId();
 
   const cname = (code) => { const c = countryByCode(code); return c ? (lang === "ar" ? c.ar : c.en) : code; };
   const example = (code) => {
@@ -224,6 +223,7 @@ export const LANGUAGES = [
 ];
 export function LanguageSelect({ value, onChange, languages = LANGUAGES, compact }) {
   const lang = useLang();
+  const titleId = React.useId();
   const current = languages.find((l) => l.id === value) ?? languages[0];
   return (
     <RAC.Select selectedKey={value} onSelectionChange={(k) => k && onChange?.(k)} aria-label={lang === "ar" ? "اللغة" : "Language"}
@@ -235,7 +235,8 @@ export function LanguageSelect({ value, onChange, languages = LANGUAGES, compact
         <RAC.SelectValue className="tv-sr" />
       </RAC.Button>
       <RAC.Popover className="tv-popover tv-langselect-pop" offset={6} placement="bottom end">
-        <RAC.ListBox items={languages} className="tv-listbox">
+        <p className="tv-pop-title" id={titleId}>{lang === "ar" ? "اللغات" : "Languages"}</p>
+        <RAC.ListBox items={languages} className="tv-listbox" aria-labelledby={titleId}>
           {(l) => (
             <RAC.ListBoxItem id={l.id} textValue={l.native} className="tv-item tv-lang-item">
               <Flag code={l.region} size={16} />

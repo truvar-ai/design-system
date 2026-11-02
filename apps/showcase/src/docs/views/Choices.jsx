@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+"use client";
+import { useState, useRef } from "react";
 import {
   Select, Item, ComboBox, CommandMenu, ListBox, ListBoxSection, GridList, GridListItem, TagGroup, Tag,
-  Tabs, TabList, Tab, TabPanel, Breadcrumbs, Disclosure, Accordion, Pagination, Avatar, Badge, IconButton, Tooltip, toast, useFormat,
+  Tabs, TabList, Tab, TabPanel, Breadcrumbs, Disclosure, Accordion, Pagination, Avatar, IconButton, Tooltip, toast, useFormat,
+  BottomNav, BottomNavItem,
 } from "../../ds.js";
-import { ListBoxItem, MenuItem as RACMenuItem, Text } from "react-aria-components";
+import { MenuItem as RACMenuItem } from "react-aria-components";
 import * as Icon from "@truvar-ai/design-system/icons";
+import { siHubspot, siGooglesheets, siPostgresql } from "simple-icons";
 import { useTr, useT, useLang } from "../i18n.jsx";
 import { Spec, ViewHeader } from "../ui.jsx";
 import { MultiSelectSpec, GridSectionsSpec, InfiniteListSpec, NavTreeSpec, KeyboardSpec, PreviewSpec } from "./Phase2.jsx";
 import { CONTACTS } from "../data.js";
 
 const SOURCE_NAMES = ["Salesforce", "HubSpot", "Google Sheets", "PostgreSQL"];
+// Brand marks from Simple Icons (CC0). Simple Icons no longer carries Salesforce, so it is a cloud in Salesforce blue.
+const BrandMark = ({ path, hex }) => <svg viewBox="0 0 24 24" fill={`#${hex}`} aria-hidden="true"><path d={path} /></svg>;
+const SALESFORCE_CLOUD = { hex: "00A1E0", path: "M10 5.5a4.4 4.4 0 0 1 3.4 1.6 3.7 3.7 0 0 1 5.5 1.9A4.2 4.2 0 0 1 24 13a4.2 4.2 0 0 1-5.5 4 3.5 3.5 0 0 1-4.6 1.4 4 4 0 0 1-7.2-.4 3.6 3.6 0 0 1-4.2-3.6 3.6 3.6 0 0 1 1.9-3.2A4.1 4.1 0 0 1 10 5.5z" };
+const SOURCE_ICONS = { sf: SALESFORCE_CLOUD, hs: siHubspot, gs: siGooglesheets, pg: siPostgresql };
 
 export function Selection() {
   const tr = useTr(); const t = useT(); const lang = useLang(); const f = useFormat();
@@ -31,7 +38,7 @@ export function Selection() {
       <Spec id="select" name={t.select} primitive="Select + ListBox + Popover" note={t.selectNote}>
         <div className="grid2">
           <Select label={t.source} items={sources} defaultSelectedKey="hs">
-            {(s) => <Item id={s.id} textValue={s.name} description={s.desc}>{s.name}</Item>}
+            {(s) => <Item id={s.id} textValue={s.name} description={s.desc} icon={<BrandMark {...SOURCE_ICONS[s.id]} />}>{s.name}</Item>}
           </Select>
           <Select label={tr("Region", "المنطقة")} isDisabled defaultSelectedKey="cai" items={[{ id: "cai", n: tr("Greater Cairo", "القاهرة الكبرى") }]}>
             {(r) => <Item id={r.id}>{r.n}</Item>}
@@ -98,6 +105,39 @@ export function Selection() {
   );
 }
 
+// Phone tab bar, shown inline in a phone frame. Tap the current tab again and it scrolls the screen to the top.
+function BottomNavSpec() {
+  const tr = useTr();
+  const [tab, setTab] = useState("inbox");
+  const screen = useRef(null);
+  const TABS = [
+    { id: "home", icon: <Icon.Home />, label: tr("Home", "الرئيسية") },
+    { id: "inbox", icon: <Icon.Mail />, label: tr("Inbox", "الوارد"), badge: 4, badgeLabel: tr(", 4 unread", "، ٤ غير مقروءة") },
+    { id: "calls", icon: <Icon.Phone />, label: tr("Calls", "المكالمات"), badge: true, badgeLabel: tr(", new activity", "، نشاط جديد") },
+    { id: "reports", icon: <Icon.TrendUp />, label: tr("Reports", "التقارير") },
+    { id: "me", icon: <Icon.User />, label: tr("Profile", "حسابي") },
+  ];
+  const current = TABS.find((x) => x.id === tab);
+  return (
+    <Spec id="bottom-nav" name={tr("Bottom navigation", "شريط التنقل السفلي")} primitive="Link / Button"
+      note={tr("Phones only, 3 to 5 tabs. Links navigate; a tab that opens a sheet is a button. Tap the current tab to scroll back to the top. Sits above the home indicator and mirrors in Arabic.",
+        "للهواتف فقط، من ٣ إلى ٥ تبويبات. الروابط تنقلك، والتبويب الذي يفتح ورقة زرّ. اضغط التبويب الحالي للعودة إلى الأعلى. يبقى فوق شريط الشاشة الرئيسية وينعكس في العربية.")}>
+      <div className="phone-demo">
+        <div className="phone-demo-screen" ref={screen}>
+          <h3 className="phone-demo-title">{current.label}</h3>
+          {Array.from({ length: 8 }, (_, i) => <div className="phone-demo-row" key={i}><span /><span /></div>)}
+        </div>
+        <BottomNav inline aria-label={tr("Demo app", "تطبيق تجريبي")}>
+          {TABS.map((x) => (
+            <BottomNavItem key={x.id} icon={x.icon} badge={x.badge} badgeLabel={x.badgeLabel} isCurrent={tab === x.id}
+              onPress={() => setTab(x.id)} onReselect={() => screen.current?.scrollTo({ top: 0, behavior: "smooth" })}>{x.label}</BottomNavItem>
+          ))}
+        </BottomNav>
+      </div>
+    </Spec>
+  );
+}
+
 export function Navigation() {
   const tr = useTr(); const t = useT();
   const [page, setPage] = useState(3);
@@ -110,6 +150,7 @@ export function Navigation() {
           {t.tabPanels.map((p, i) => <TabPanel key={i} id={`t${i}`}>{p}</TabPanel>)}
         </Tabs>
       </Spec>
+      <BottomNavSpec />
       <Spec id="breadcrumbs" name={tr("Breadcrumbs", "مسار التنقل")} primitive="Breadcrumbs" note={tr("The last item is the current page and isn't a link. Separators mirror in Arabic.", "العنصر الأخير هو الصفحة الحالية وليس رابطًا. الفواصل تنعكس في العربية.")}>
         <Breadcrumbs items={[{ label: tr("Workspace", "مساحة العمل"), href: "#overview" }, { label: tr("Reports", "التقارير"), href: "#data" }, { label: tr("Churn", "فقدان العملاء"), href: "#data" }, { label: tr("Q3 2026", "الربع الثالث ٢٠٢٦") }]} />
       </Spec>

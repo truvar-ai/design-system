@@ -1,4 +1,3 @@
-import React from "react";
 import { useTr, useLang } from "./i18n.jsx";
 import { VIEWS } from "./nav.js";
 
@@ -10,7 +9,7 @@ export function Spec({ id, name, primitive, note, children, wide }) {
   return (
     <div className={"spec" + (wide ? " spec--wide" : "")} id={id}>
       <div className="spec-meta">
-        <h3>{name}</h3>
+        <h2 className="spec-title">{name}</h2>
         {primitive && <p className="caption">{tr("Built on", "مبني على")} <code dir="ltr">{primitive}</code></p>}
         {note && <p className="caption">{rich(note)}</p>}
       </div>

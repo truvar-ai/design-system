@@ -1,23 +1,22 @@
 // @truvar/ui phase 2: the newer React Aria components, styled for Truvar.
-import React, { useState, useMemo } from "react";
 import * as RAC from "react-aria-components";
 import * as Icon from "../icons/icons.jsx";
 import { OrbitMark } from "./index.jsx";
+import { numberFormat } from "./format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 const useLang = () => (RAC.useLocale().locale.startsWith("ar") ? "ar" : "en");
-const L = (en, ar) => ({ en, ar });
 const pick = (lang, o) => (lang === "ar" ? o.ar : o.en);
 
 /* =====================================================================
    SHEET: panels that slide in from any edge and can be swiped closed.
    ===================================================================== */
-export function Sheet({ trigger, title, position = "bottom", snapPoints, children, footer }) {
+// Uncontrolled with a trigger, or controlled with isOpen/onOpenChange (no trigger needed), e.g. from a BottomNav tab.
+export function Sheet({ trigger, title, position = "bottom", snapPoints, children, footer, isOpen, onOpenChange }) {
   const lang = useLang();
-  return (
-    <RAC.SheetTrigger>
-      {trigger}
-      <RAC.SheetOverlay position={position} snapPoints={snapPoints} className="tv-sheet-overlay">
+  const overlay = (
+      <RAC.SheetOverlay position={position} snapPoints={snapPoints} className="tv-sheet-overlay"
+        {...(isOpen !== undefined && { isOpen, onOpenChange })}>
         <RAC.SheetBackdrop className="tv-sheet-backdrop" />
         <RAC.Sheet className={({ position: p }) => cx("tv-sheet", `is-${p}`)}>
           <RAC.SheetContent className="tv-sheet-content">
@@ -35,8 +34,9 @@ export function Sheet({ trigger, title, position = "bottom", snapPoints, childre
           </RAC.SheetContent>
         </RAC.Sheet>
       </RAC.SheetOverlay>
-    </RAC.SheetTrigger>
   );
+  if (!trigger) return overlay;
+  return <RAC.SheetTrigger isOpen={isOpen} onOpenChange={onOpenChange}>{trigger}{overlay}</RAC.SheetTrigger>;
 }
 
 /* =====================================================================
@@ -219,7 +219,7 @@ export function LoadMoreIndicator({ label }) {
 export function NavTree({ ariaLabel, selectedRoute, sections, defaultExpandedKeys }) {
   const lang = useLang();
   const { locale } = RAC.useLocale();
-  const num = (n) => new Intl.NumberFormat(locale).format(n);
+  const num = (n) => numberFormat(locale).format(n);
   const renderItem = (it) => (
     <RAC.NavigationTreeItem key={it.id} id={it.id} href={it.href} textValue={pick(lang, it.label)} className="tv-navtree-item">
       <RAC.NavigationTreeItemContent>

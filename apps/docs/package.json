@@ -1,0 +1,25 @@
+{
+  "name": "docs",
+  "private": true,
+  "description": "design-system.truvar.ai: the landing page and documentation, built with the design system itself.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/routes.mjs && next dev --port 3000",
+    "build": "node scripts/routes.mjs && next build && node scripts/prefetch.mjs && node scripts/llms.mjs",
+    "start": "serve out --listen 3001"
+  },
+  "dependencies": {
+    "@internationalized/date": "^3.12.4",
+    "@truvar-ai/design-system": "workspace:*",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-aria-components": "^1.22.1",
+    "react-dom": "19.3.1",
+    "showcase": "workspace:*",
+    "simple-icons": "^16.36.0"
+  },
+  "devDependencies": {
+    "node-html-parser": "9.0.4",
+    "serve": "14.2.6"
+  }
+}

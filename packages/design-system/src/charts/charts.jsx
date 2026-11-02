@@ -7,6 +7,7 @@ import {
   ScatterChart, Scatter, ZAxis, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, FunnelChart, Funnel,
   LabelList, Treemap, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip, ReferenceLine,
 } from "recharts";
+import { numberFormat } from "../core/format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 export const CHART_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)"];
@@ -14,7 +15,7 @@ export const CHART_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)
 export function useChartLocale() {
   const { locale, direction } = RAC.useLocale();
   const rtl = direction === "rtl";
-  const nf = (o) => new Intl.NumberFormat(locale, o);
+  const nf = (o) => numberFormat(locale, o);
   return {
     locale, rtl, lang: locale.startsWith("ar") ? "ar" : "en",
     num: (v, o) => nf(o).format(v),
@@ -62,7 +63,9 @@ export function ChartLegend({ items }) {
 }
 
 /* ChartCard: title, legend, chart/table toggle. `table` = { columns: [{key,label,format?,align?}], rows } */
-export function ChartCard({ title, subtitle, summary, legend, table, height = 260, children, actions }) {
+// headingLevel: the title's heading level (3 by default), so it fits the page's outline
+export function ChartCard({ title, subtitle, summary, legend, table, height = 260, children, actions, headingLevel = 3 }) {
+  const H = `h${headingLevel}`;
   const { lang } = useChartLocale();
   const [view, setView] = useState("chart");
   const id = useId();
@@ -71,7 +74,7 @@ export function ChartCard({ title, subtitle, summary, legend, table, height = 26
     <figure className="tv-chart-card" aria-labelledby={id + "t"}>
       <header className="tv-chart-head">
         <div className="tv-chart-titles">
-          <h4 id={id + "t"} className="tv-chart-title">{title}</h4>
+          <H id={id + "t"} className="tv-chart-title">{title}</H>
           {subtitle && <p className="tv-desc">{subtitle}</p>}
         </div>
         <div className="tv-chart-actions">

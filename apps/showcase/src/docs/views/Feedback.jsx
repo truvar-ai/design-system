@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import {
   Button, toast, Banner, NotificationCenter, ProgressBar, Meter, Badge, Skeleton, EmptyState, OrbitLoader,
   SegmentButton, ToggleButtonGroup, Avatar, useFormat,
@@ -13,13 +14,45 @@ export function useNotifications() {
   const tr = useTr();
   const f = useFormat();
   const [read, setRead] = useState(new Set());
+  // Items with detail open a reading view in the panel and a full page at #inbox/<id>
+  const done = (title) => (close) => { close?.(); toast({ tone: "success", title }); };
   const base = [
-    { id: "n1", icon: <Icon.TrendUp />, title: tr("Delta Freight opened your proposal 3 times", "فتحت Delta Freight عرضك ٣ مرات"), time: f.relative(0) },
-    { id: "n2", icon: <Icon.Users />, title: tr("Laila assigned you 4 new leads", "أسندت إليك ليلى ٤ عملاء جدد"), time: f.relative(0) },
-    { id: "n3", icon: <Icon.CheckCircle />, title: tr("Alex Pharma signed the annual plan", "وقّعت Alex Pharma على الخطة السنوية"), time: f.relative(1) },
+    { id: "n0", icon: <Icon.Mail />, title: tr("Mona Fathy replied: Pricing for 50 seats", "ردّت منى فتحي: تسعير ٥٠ مقعدًا"), time: f.relative(0),
+      detail: {
+        avatar: <Avatar name="Mona Fathy" size={40} />, from: "Mona Fathy · Sinai Retail", subject: tr("Re: Pricing for 50 seats", "رد: تسعير ٥٠ مقعدًا"),
+        preview: tr("Thanks for the proposal. Before we sign, can you confirm…", "شكرًا على العرض. قبل التوقيع، هل يمكنك تأكيد…"),
+        body: tr(
+          <><p>Hi,</p><p>Thanks for the proposal. Before we sign, can you confirm two things?</p><ul><li>Is Arabic voice included in the Growth plan?</li><li>Can we start with 30 seats and add 20 in March?</li></ul><p>If both are yes, we can sign this week.</p><p>Mona</p></>,
+          <><p>مرحبًا،</p><p>شكرًا على العرض. قبل التوقيع، هل يمكنك تأكيد أمرين؟</p><ul><li>هل الصوت العربي مشمول في خطة النمو؟</li><li>هل يمكن البدء بـ٣٠ مقعدًا وإضافة ٢٠ في مارس؟</li></ul><p>إذا كانت الإجابة نعم على الاثنين، يمكننا التوقيع هذا الأسبوع.</p><p>منى</p></>),
+        actions: [{ label: tr("Reply", "رد"), onPress: done(tr("Reply drafted", "تمت صياغة الرد")) }, { label: tr("Open deal", "فتح الصفقة"), onPress: (close) => { close?.(); location.hash = "data"; } }],
+        href: "#inbox/n0",
+      } },
+    { id: "n1", icon: <Icon.TrendUp />, title: tr("Delta Freight opened your proposal 3 times", "فتحت Delta Freight عرضك ٣ مرات"), time: f.relative(0),
+      detail: {
+        from: "Tarek Saleh · Delta Freight", preview: tr("Most time spent on the pricing page", "قضوا معظم الوقت في صفحة الأسعار"),
+        body: tr(
+          <><p>Tarek viewed the proposal 3 times today, for 11 minutes in total. Most of that time was on the pricing page.</p><p>Deals that get this attention close 2× more often when you follow up within a day.</p></>,
+          <><p>شاهد طارق العرض ٣ مرات اليوم، لمدة ١١ دقيقة إجمالًا، معظمها في صفحة الأسعار.</p><p>الصفقات التي تحظى بهذا الاهتمام تُغلق بمعدل الضعف عند المتابعة خلال يوم.</p></>),
+        actions: [{ label: tr("Call Tarek", "اتصل بطارق"), onPress: done(tr("Calling Tarek Saleh", "جارٍ الاتصال بطارق صالح")) }, { label: tr("Send follow-up", "أرسل متابعة"), onPress: done(tr("Follow-up scheduled", "تمت جدولة المتابعة")) }],
+        href: "#inbox/n1",
+      } },
+    { id: "n2", icon: <Icon.Users />, title: tr("Laila assigned you 4 new leads", "أسندت إليك ليلى ٤ عملاء جدد"), time: f.relative(0),
+      detail: {
+        from: "Laila Mansour",
+        body: <><p>{tr("These leads came from the Cairo webinar:", "جاء هؤلاء العملاء من ندوة القاهرة:")}</p><ul><li>Karim Mostafa · Giza Motors</li><li>Salma Adel · Red Sea Resorts</li><li>Mahmoud Gaber · Port Said Logistics</li><li>Yasmin Hosny · Mansoura Dairy</li></ul></>,
+        actions: [{ label: tr("View leads", "عرض العملاء"), onPress: (close) => { close?.(); location.hash = "overview"; } }],
+        href: "#inbox/n2",
+      } },
+    { id: "n3", icon: <Icon.CheckCircle />, title: tr("Alex Pharma signed the annual plan", "وقّعت Alex Pharma على الخطة السنوية"), time: f.relative(1),
+      detail: {
+        from: "Hany Ibrahim · Alex Pharma",
+        body: tr(<p>The annual Growth plan is signed: 120 seats, EGP 2,100,000 a year, starting 1 December. Onboarding is booked for next Tuesday.</p>,
+          <p>تم توقيع خطة النمو السنوية: ١٢٠ مقعدًا، بقيمة ٢٬١٠٠٬٠٠٠ ج.م. سنويًا، تبدأ في ١ ديسمبر. موعد التهيئة يوم الثلاثاء القادم.</p>),
+        href: "#inbox/n3",
+      } },
     { id: "n4", icon: <Icon.FileText />, title: tr("Weekly churn report is ready", "تقرير فقدان العملاء الأسبوعي جاهز"), time: f.relative(3) },
   ];
-  const items = base.map((n, i) => ({ ...n, unread: i < 3 && !read.has(n.id) }));
+  const items = base.map((n, i) => ({ ...n, unread: i < 4 && !read.has(n.id) }));
   return {
     items,
     markAll: () => setRead(new Set(base.map((n) => n.id))),
@@ -35,10 +68,13 @@ export function Feedback() {
   const notif = useNotifications();
   useEffect(() => {
     if (upload <= 0 || upload >= 100) return;
-    const id = setTimeout(() => setUpload((u) => Math.min(100, u + 7)), 160);
+    const id = setTimeout(() => {
+      const next = Math.min(100, upload + 7);
+      setUpload(next);
+      if (next === 100) toast({ tone: "success", title: tr("Upload complete", "اكتمل الرفع"), description: "q3-contacts.csv" });
+    }, 160);
     return () => clearTimeout(id);
-  }, [upload]);
-  useEffect(() => { if (upload >= 100) toast({ tone: "success", title: tr("Upload complete", "اكتمل الرفع"), description: "q3-contacts.csv" }); }, [upload >= 100]);
+  }, [upload, tr]);
   return (
     <>
       <ViewHeader viewId="feedback" intro={tr("Tell people what happened, in plain words, at the right volume: toasts for passing confirmations, banners for things that need attention, dialogs only when a decision is needed.", "أخبر الناس بما حدث بكلمات بسيطة وبالقدر المناسب: إشعارات منبثقة للتأكيدات العابرة، وتنبيهات لما يحتاج انتباهًا، ونوافذ فقط عند الحاجة إلى قرار.")} />

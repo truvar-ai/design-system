@@ -1,10 +1,11 @@
 // Live call widget. States: idle → connecting → live → ended.
 // Wire `onStart` / `onEnd` / `onMute` to your WebRTC or telephony client; the demo drives it with a script.
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as RAC from "react-aria-components";
 import * as Icon from "../icons/icons.jsx";
 import { BrandAvatar } from "../core/index.jsx";
 import { formatClock } from "./audio.js";
+import { numberFormat } from "../core/format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 const useLang = () => (RAC.useLocale().locale.startsWith("ar") ? "ar" : "en");
@@ -60,7 +61,7 @@ export function LiveCall({ agentName, script, onStart, onEnd }) {
   const L = (o) => (lang === "ar" ? o.ar : o.en);
   const status = state === "connecting" ? t.connecting : state === "live" ? t.live : state === "ended" ? t.ended : null;
   const latTone = latency == null ? "" : latency < 800 ? "is-good" : latency < 1300 ? "is-ok" : "is-slow";
-  const nf = new Intl.NumberFormat(locale);
+  const nf = numberFormat(locale);
 
   return (
     <div className={cx("tv-live", `is-${state}`)}>
@@ -70,7 +71,7 @@ export function LiveCall({ agentName, script, onStart, onEnd }) {
             <span className="tv-live-status-dot" />{status}{state === "live" && <span dir="ltr" className="tv-live-timer">{formatClock(elapsed, locale)}</span>}
           </span>
         )}
-        {latency != null && state === "live" && <span className={cx("tv-live-latency", latTone)}>{t.latency} <b>{new Intl.NumberFormat(locale, { style: "unit", unit: "millisecond", unitDisplay: "short" }).format(latency)}</b></span>}
+        {latency != null && state === "live" && <span className={cx("tv-live-latency", latTone)}>{t.latency} <b>{numberFormat(locale, { style: "unit", unit: "millisecond", unitDisplay: "short" }).format(latency)}</b></span>}
       </div>
 
       <div className="tv-live-center">

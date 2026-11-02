@@ -3,6 +3,20 @@ export const NAV = [
   { group: ["Start", "البداية"], views: [
     { id: "overview", name: ["CRM example", "مثال إدارة العملاء"], icon: "Home", items: [] },
   ]},
+  { group: ["Workspace", "مساحة العمل"], views: [
+    { id: "dashboard", name: ["Dashboard", "لوحة المؤشرات"], icon: "TrendUp", items: [] },
+    { id: "conversations", name: ["Conversations", "المحادثات"], icon: "MessageCircle", items: [] },
+    { id: "contacts", name: ["Contacts", "جهات الاتصال"], icon: "Users", items: [] },
+    { id: "opportunities", name: ["Opportunities", "الفرص"], icon: "Kanban", items: [] },
+    { id: "schedule", name: ["Calendar", "التقويم"], icon: "Calendar", items: [] },
+    { id: "team", name: ["Team & roles", "الفريق والأدوار"], icon: "Shield", items: [] },
+  ]},
+  { group: ["Channels", "القنوات"], views: [
+    { id: "widget", name: ["Website widget", "ودجت الموقع"], icon: "MessageSquare", items: [
+      ["embed", "Add it to a website", "أضفه إلى موقع"], ["w-steps", "Agent steps", "خطوات الوكيل"], ["w-slots", "Time slots", "المواعيد"],
+      ["w-approval", "Approval", "الموافقة"], ["w-form", "Inline form", "نموذج داخل المحادثة"], ["w-cards", "Choice cards", "بطاقات الاختيار"],
+      ["w-result", "Result", "النتيجة"], ["w-messages", "Messages", "الرسائل"], ["w-call", "Voice call", "المكالمة الصوتية"]] },
+  ]},
   { group: ["Foundations", "الأساسيات"], views: [
     { id: "colors", name: ["Colour and tokens", "الألوان والرموز"], icon: "Palette", items: [
       ["color-tokens", "Colour tokens", "رموز الألوان"], ["spacing", "Spacing", "المسافات"], ["radius", "Radius and depth", "الحواف والعمق"]] },
@@ -30,8 +44,12 @@ export const NAV = [
     { id: "selection", name: ["Selection", "الاختيار"], icon: "List", items: [
       ["select", "Select", "قائمة اختيار"], ["combo-box", "Combo box", "بحث واختيار"], ["autocomplete", "Autocomplete", "إكمال تلقائي"],
       ["list-box", "List box", "قائمة خيارات"], ["multi-select", "Multi-select", "اختيار متعدد"], ["grid-list", "Grid list", "قائمة تفاعلية"], ["grid-sections", "Grouped list", "قائمة مجمعة"], ["infinite-list", "Infinite list", "قائمة لا نهائية"], ["tags", "Tag group", "الوسوم"]] },
+    { id: "crm-kit", name: ["Conversations kit", "مكونات المحادثات"], icon: "MessageSquare", items: [
+      ["channels", "Channels", "القنوات"], ["conversation-list", "Conversation list", "قائمة المحادثات"], ["messages", "Messages", "الرسائل"],
+      ["ai-handoff", "AI handoff", "التسليم بين الذكاء الاصطناعي والفريق"], ["composer", "Composer", "محرر الرد"], ["contact-panel", "Contact panel", "لوحة العميل"],
+      ["contact-header", "Contact header and call", "رأس ملف العميل والاتصال"], ["timeline", "Activity timeline", "سجل النشاط"], ["permissions", "Roles and permissions", "الأدوار والصلاحيات"]] },
     { id: "navigation", name: ["Navigation", "التنقل"], icon: "Layers", items: [
-      ["tabs", "Tabs", "علامات التبويب"], ["breadcrumbs", "Breadcrumbs", "مسار التنقل"], ["disclosure", "Disclosure and accordion", "إفصاح وأكورديون"], ["pagination", "Pagination", "ترقيم الصفحات"], ["navigation-tree", "Navigation tree", "شجرة التنقل"], ["keyboard", "Keyboard shortcuts", "اختصارات لوحة المفاتيح"], ["preview", "Hover preview", "معاينة عند المرور"]] },
+      ["tabs", "Tabs", "علامات التبويب"], ["bottom-nav", "Bottom navigation", "شريط التنقل السفلي"], ["breadcrumbs", "Breadcrumbs", "مسار التنقل"], ["disclosure", "Disclosure and accordion", "إفصاح وأكورديون"], ["pagination", "Pagination", "ترقيم الصفحات"], ["navigation-tree", "Navigation tree", "شجرة التنقل"], ["keyboard", "Keyboard shortcuts", "اختصارات لوحة المفاتيح"], ["preview", "Hover preview", "معاينة عند المرور"]] },
     { id: "overlays", name: ["Dialogs and overlays", "النوافذ والطبقات"], icon: "Layers", items: [
       ["dialog", "Dialog", "نافذة حوار"], ["confirm-dialog", "Confirmation", "تأكيد"], ["delete-dialog", "Destructive confirmation", "تأكيد الحذف"],
       ["full-dialog", "Large dialog", "نافذة كبيرة"], ["drawer", "Drawer", "لوحة جانبية"], ["sheet", "Sheet", "ورقة منزلقة"], ["popover", "Popover", "نافذة منبثقة"], ["menu", "Menu", "قائمة"], ["tooltip", "Tooltip", "تلميح"]] },

@@ -157,7 +157,7 @@
 .tv-json { padding: var(--space-2) var(--space-3); }
 .j-line { white-space:pre; display:flex; align-items:center; min-height: 20px; }
 .j-toggle { width:16px; height:16px; margin-inline-start: -18px; margin-inline-end: 2px; border:0; background:transparent; color: var(--ink-muted); cursor:pointer; display:grid; place-items:center; border-radius: 3px; padding:0; }
-.j-toggle:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); }
+@media (hover: hover) { .j-toggle:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); } }
 .j-toggle:focus-visible { outline:2px solid var(--focus-ring); }
 .tv-json > div { padding-inline-start: 18px; }
 .tv-code-tabs { display:flex; }
@@ -250,7 +250,7 @@
 .wf-controls.react-flow__controls { box-shadow:none; border:1px solid var(--border); border-radius: var(--radius-sm); overflow:hidden; }
 .wf-controls .react-flow__controls-button { background: var(--surface-raised); border-bottom: 1px solid var(--border); color: var(--ink); fill: var(--ink); width: 28px; height: 28px; }
 .wf-controls .react-flow__controls-button svg { fill: var(--ink); max-width: 12px; max-height: 12px; }
-.wf-controls .react-flow__controls-button:hover { background: var(--surface-alt); }
+@media (hover: hover) { .wf-controls .react-flow__controls-button:hover { background: var(--surface-alt); } }
 .wf-minimap.react-flow__minimap { background: var(--surface-raised); border:1px solid var(--border); border-radius: var(--radius-sm); }
 @media (max-width: 960px) { .wf-main { grid-template-columns: 1fr; grid-template-rows: minmax(420px, 1fr) auto; } .wf-side { border-inline-start:0; border-top:1px solid var(--border); } .wf-minimap { display:none; } }
 

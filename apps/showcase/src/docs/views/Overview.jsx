@@ -1,5 +1,6 @@
+"use client";
 // A realistic CRM screen built only from @truvar/ui components
-import React, { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   Button, SearchField, Select, Item, Breadcrumbs, StatTile, Table, TableHeader, Column, TableBody, Row, Cell,
   SelectionColumn, Badge, Avatar, Pagination, MenuButton, MenuItem, ConfirmDialog, Modal, TextField, PhoneField, Form, FileTrigger,
@@ -16,7 +17,7 @@ export default function Overview() {
   const tr = useTr();
   const lang = useLang();
   const f = useFormat();
-  const L = (o) => (lang === "ar" ? o.ar : o.en);
+  const L = useCallback((o) => (lang === "ar" ? o.ar : o.en), [lang]);
   const [rows, setRows] = useState(CONTACTS);
   const [sort, setSort] = useState({ column: "value", direction: "descending" });
   const [selected, setSelected] = useState(new Set());
@@ -35,7 +36,7 @@ export default function Overview() {
     const key = { name: (c) => L(c), company: (c) => c.company, stage: (c) => STAGES.findIndex((s) => s.id === c.stage),
       owner: (c) => L(ownerOf(c.owner)), value: (c) => c.value, activity: (c) => c.days }[sort.column];
     return [...r].sort((a, b) => (key(a) > key(b) ? 1 : key(a) < key(b) ? -1 : 0) * dir);
-  }, [rows, query, stage, sort, lang]);
+  }, [rows, query, stage, sort, L]);
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE));
   const current = filtered.slice((page - 1) * PAGE, page * PAGE);
   const selIds = selected === "all" ? filtered.map((c) => c.id) : [...selected];
@@ -65,12 +66,12 @@ export default function Overview() {
           <Breadcrumbs items={[{ label: tr("CRM", "إدارة العملاء"), href: "#overview" }, { label: tr("Contacts", "جهات الاتصال") }]} />
           <h2 className="app-title">{tr("Contacts", "جهات الاتصال")}</h2>
         </div>
-        <div className="row">
+        <div className="row ws-page-actions">
           <FileTrigger acceptedFileTypes={[".csv", "text/csv"]} onSelect={(files) => files && toast({ tone: "success",
             title: tr("Import started", "بدأ الاستيراد"), description: [...files].map((x) => x.name).join(", ") })}>
-            <Button variant="secondary"><Icon.Upload />{tr("Import", "استيراد")}</Button>
+            <Button variant="secondary"><Icon.Upload /><span className="ws-btn-label">{tr("Import", "استيراد")}</span></Button>
           </FileTrigger>
-          <Modal trigger={<Button><Icon.Plus />{tr("Add contact", "إضافة جهة اتصال")}</Button>} title={tr("Add contact", "إضافة جهة اتصال")}>
+          <Modal trigger={<Button><Icon.Plus /><span className="ws-btn-long">{tr("Add contact", "إضافة جهة اتصال")}</span><span className="ws-btn-short" aria-hidden="true">{tr("Add", "إضافة")}</span></Button>} title={tr("Add contact", "إضافة جهة اتصال")}>
             {({ close }) => (
               <Form onSubmit={(e) => {
                 e.preventDefault();
@@ -99,8 +100,8 @@ export default function Overview() {
 
       {showTip && (
         <Banner tone="info" title={tr("Tip: open any contact", "نصيحة: افتح أي جهة اتصال")} onDismiss={() => setShowTip(false)}>
-          {tr("Click a row to open its record panel. Tick the boxes to assign, export or delete in bulk.",
-              "اضغط على أي صف لفتح لوحة السجل. حدّد المربعات للإسناد أو التصدير أو الحذف دفعة واحدة.")}
+          {tr("Click a row to open the contact's full record. Tick the boxes to assign, export or delete in bulk.",
+              "اضغط على أي صف لفتح ملف العميل الكامل. حدّد المربعات للإسناد أو التصدير أو الحذف دفعة واحدة.")}
         </Banner>
       )}
 
@@ -142,7 +143,7 @@ export default function Overview() {
 
       <div className="tv-table-scroll">
         <Table aria-label={tr("Contacts", "جهات الاتصال")} selectionMode="multiple" selectedKeys={selected} onSelectionChange={setSelected}
-          sortDescriptor={sort} onSortChange={setSort} onRowAction={(id) => setOpenId(id)}>
+          sortDescriptor={sort} onSortChange={setSort} onRowAction={(id) => { location.hash = "contact/" + id; }}>
           <TableHeader>
             <SelectionColumn />
             <Column id="name" isRowHeader allowsSorting>{tr("Name", "الاسم")}</Column>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+"use client";
+import { useState } from "react";
 import {
   Button, IconButton, Tooltip, Modal, ConfirmDialog, Drawer, InfoPopover, MenuButton, MenuItem, MenuSeparator, MenuSection,
-  SelectableMenuItem, Submenu, TextField, Checkbox, Select, Item, Switch, toast, Banner, Badge, useFormat,
+  SelectableMenuItem, Submenu, TextField, Checkbox, Select, Item, Switch, toast, Banner, useFormat,
 } from "../../ds.js";
 import * as Icon from "@truvar-ai/design-system/icons";
 import { useTr, useT, useLang } from "../i18n.jsx";

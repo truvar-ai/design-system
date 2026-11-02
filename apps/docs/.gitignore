@@ -1,0 +1,8 @@
+.next/
+out/
+next-env.d.ts
+# One route per component page, written by scripts/routes.mjs before dev and build
+app/(en)/docs/*/
+app/(ar)/ar/docs/*/
+!app/(en)/docs/[slug]/
+!app/(ar)/ar/docs/[slug]/

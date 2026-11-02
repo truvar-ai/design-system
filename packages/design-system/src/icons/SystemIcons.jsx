@@ -1,6 +1,5 @@
 // Truvar OS system icons: stateful, drawn with the same rounded 1.75px stroke as the rest of the library.
 // Each takes a `label` for screen readers; without one it's decorative.
-import React from "react";
 
 const Svg = ({ label, size = 20, children, className, ...p }) => (
   <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"

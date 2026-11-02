@@ -3,3 +3,5 @@ export * from "@truvar-ai/design-system";
 export * from "@truvar-ai/design-system/charts";
 export * from "@truvar-ai/design-system/voice";
 export * from "@truvar-ai/design-system/os";
+export * from "@truvar-ai/design-system/crm";
+export * from "@truvar-ai/design-system/widget";

@@ -1,12 +1,13 @@
-import React from "react";
+"use client";
 import {
   ChartCard, useChartLocale, axisProps, gridProps, tooltipProps, Sparkline, Gauge, Heatmap, CHART_COLORS,
   LineChart, Line, AreaChart, Area, BarChart, Bar, ComposedChart, PieChart, Pie, ChartCell, ScatterChart, Scatter, ZAxis,
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, FunnelChart, Funnel, LabelList, Treemap,
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Treemap,
   XAxis, YAxis, CartesianGrid, ChartTooltipBase as Tooltip, ReferenceLine, StatTile, FunnelBars, RankedBars,
 } from "../../ds.js";
 import { useTr } from "../i18n.jsx";
 import { Spec, ViewHeader } from "../ui.jsx";
+import { dateFormat } from "@truvar-ai/design-system";
 
 /* ---------- deterministic sample data ---------- */
 const rnd = (seed) => { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; };
@@ -52,8 +53,8 @@ function useC() {
   const tr = useTr();
   const loc = useChartLocale();
   const L = (o) => (loc.lang === "ar" ? o.ar : o.en);
-  const dayFmt = (d) => new Intl.DateTimeFormat(loc.locale, { day: "numeric", month: "short" }).format(d);
-  const monthFmt = (m) => new Intl.DateTimeFormat(loc.locale, { month: "short" }).format(new Date(2026, m - 1, 1));
+  const dayFmt = (d) => dateFormat(loc.locale, { day: "numeric", month: "short" }).format(d);
+  const monthFmt = (m) => dateFormat(loc.locale, { month: "short" }).format(new Date(2026, m - 1, 1));
   // In Arabic, time runs right to left and the value axis sits on the right.
   const xAxis = (extra) => axisProps(loc.rtl, { reversed: loc.rtl, ...extra });
   const yAxis = (extra) => axisProps(loc.rtl, { orientation: loc.rtl ? "right" : "left", width: 52, tickMargin: 8, axisLine: false, ...extra });
@@ -134,7 +135,7 @@ export function Charts() {
 
       <Spec id="ranked-bars" name={tr("Ranked bars", "أعمدة مرتبة")} primitive="RankedBars (HTML)" wide note={tr("Horizontal bars for long labels, sorted largest first. Built as a list, so labels never collide with bars and it mirrors in Arabic.", "أعمدة أفقية للتسميات الطويلة، مرتبة من الأكبر. مبنية كقائمة فلا تتداخل التسميات مع الأعمدة وتنعكس في العربية.")}>
         <div className="tv-chart-card">
-          <h4 className="tv-chart-title">{tr("Why customers call", "لماذا يتصل العملاء")}</h4>
+          <h3 className="tv-chart-title">{tr("Why customers call", "لماذا يتصل العملاء")}</h3>
           <p className="tv-desc" style={{ margin: 0 }}>{tr("Top intents this month", "أهم الأسباب هذا الشهر")}</p>
           <RankedBars items={INTENTS.map((x) => ({ label: L(x), value: x.v }))} format={(v) => num(v)} />
         </div>
@@ -238,7 +239,7 @@ export function Charts() {
 
       <Spec id="funnel-chart" name={tr("Funnel", "قمع")} primitive="FunnelBars (HTML)" note={tr("Drop-off between ordered stages. Each step shows its count and the conversion from the step before.", "التسرب بين مراحل مرتبة. كل مرحلة تُظهر عددها ونسبة التحويل من المرحلة السابقة.")}>
         <div className="tv-chart-card">
-          <h4 className="tv-chart-title">{tr("From call to customer", "من المكالمة إلى العميل")}</h4>
+          <h3 className="tv-chart-title">{tr("From call to customer", "من المكالمة إلى العميل")}</h3>
           <p className="tv-desc" style={{ margin: 0 }}>{tr("12,400 answered calls led to 860 won deals, 7% overall.", "أدت ١٢٬٤٠٠ مكالمة إلى ٨٦٠ صفقة ناجحة، بنسبة ٧٪ إجمالًا.")}</p>
           <div className="tv-funnel-head" aria-hidden="true"><span>{tr("Stage", "المرحلة")}</span><span /><span>{tr("Count", "العدد")}</span><span>{tr("Step", "التحويل")}</span></div>
           <FunnelBars stages={FUNNEL.map((x) => ({ label: L(x), value: x.v }))} format={(v) => num(v)} pct={(v) => pct(v)} convLabel={tr("of the previous stage", "من المرحلة السابقة")} />
@@ -256,9 +257,9 @@ export function Charts() {
 
       <Spec id="heatmap" name={tr("Heatmap", "خريطة حرارية")} primitive="CSS grid" wide note={tr("Two dimensions of time at once. Hover a cell for its exact value; the scale runs from light to dark.", "بُعدان للوقت معًا. مرّر المؤشر على خلية لترى قيمتها، والمقياس يتدرج من الفاتح إلى الداكن.")}>
         <div className="tv-chart-card">
-          <h4 className="tv-chart-title">{tr("When customers call", "متى يتصل العملاء")}</h4>
+          <h3 className="tv-chart-title">{tr("When customers call", "متى يتصل العملاء")}</h3>
           <Heatmap ariaLabel={tr("Calls peak on weekdays around 1 pm and 7 pm.", "تبلغ المكالمات ذروتها في أيام العمل نحو الواحدة ظهرًا والسابعة مساءً.")}
-            rows={[0, 1, 2, 3, 4, 5, 6].map((d) => new Intl.DateTimeFormat(c.locale, { weekday: "short" }).format(new Date(2026, 9, 25 + d)))}
+            rows={[0, 1, 2, 3, 4, 5, 6].map((d) => dateFormat(c.locale, { weekday: "short" }).format(new Date(2026, 9, 25 + d)))}
             cols={Array.from({ length: 24 }, (_, h) => (h % 3 === 0 ? num(h) : ""))}
             values={HEAT} max={Math.max(...HEAT.flat())} format={(v) => num(v)}
             cellLabel={(r, _c, v) => `${r}: ${num(v)}`} />
@@ -270,7 +271,7 @@ export function Charts() {
 }
 
 function TreeCell(props) {
-  const { x, y, width, height, name, size, fill, index, depth, money } = props;
+  const { x, y, width, height, name, size, fill, depth, money } = props;
   if (width <= 0 || height <= 0 || depth === 0) return null;
   const ink = String(fill).replace("--chart-", "--chart-ink-"); // label colour paired with the tile colour
   return (

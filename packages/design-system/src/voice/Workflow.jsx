@@ -1,5 +1,5 @@
 // Conversation workflow builder on React Flow (@xyflow/react, MIT), styled with Truvar tokens.
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import * as RAC from "react-aria-components";
 import {
   ReactFlow, ReactFlowProvider, Background, Controls, MiniMap, Handle, Position, useNodesState, useEdgesState, addEdge,
@@ -47,23 +47,30 @@ function NodeShell({ kind, selected, children, handles = "both", tone }) {
     </div>
   );
 }
+function StartNode({ selected }) {
+  const lang = useLang();
+  return <div className={cx("wf-pill is-start", selected && "is-selected")}><Icon.Play width={14} height={14} />{KIND.start[lang]}<Handle type="source" position={Position.Bottom} className="wf-handle" /></div>;
+}
+function ConditionNode({ selected }) {
+  const lang = useLang();
+  return <div className={cx("wf-pill is-condition", selected && "is-selected")}><Handle type="target" position={Position.Top} className="wf-handle" /><Icon.GitBranch width={14} height={14} />{KIND.condition[lang]}<Handle type="source" position={Position.Bottom} className="wf-handle" /></div>;
+}
+function BranchNode({ data, selected }) {
+  const lang = useLang();
+  return <div className={cx("wf-pill is-branch", selected && "is-selected")}><Handle type="target" position={Position.Top} className="wf-handle" />{L(lang, data.label)}<Handle type="source" position={Position.Bottom} className="wf-handle" /></div>;
+}
+function EndNode({ data, selected }) {
+  const lang = useLang();
+  return <NodeShell kind="end" selected={selected} handles="in"><span className="wf-muted">{L(lang, data.note)}</span></NodeShell>;
+}
 const nodeTypes = {
-  start: ({ selected }) => {
-    const lang = useLang();
-    return <div className={cx("wf-pill is-start", selected && "is-selected")}><Icon.Play width={14} height={14} />{KIND.start[lang]}<Handle type="source" position={Position.Bottom} className="wf-handle" /></div>;
-  },
+  start: StartNode,
   say: ({ data, selected }) => <NodeShell kind="say" selected={selected}><SegmentsPreview segments={data.segments} vars={data.vars} /></NodeShell>,
   api: ({ data, selected }) => <NodeShell kind="api" selected={selected}><code className="wf-api" dir="ltr"><b>{data.method}</b> {data.url}</code></NodeShell>,
-  condition: ({ data, selected }) => {
-    const lang = useLang();
-    return <div className={cx("wf-pill is-condition", selected && "is-selected")}><Handle type="target" position={Position.Top} className="wf-handle" /><Icon.GitBranch width={14} height={14} />{KIND.condition[lang]}<Handle type="source" position={Position.Bottom} className="wf-handle" /></div>;
-  },
-  branch: ({ data, selected }) => {
-    const lang = useLang();
-    return <div className={cx("wf-pill is-branch", selected && "is-selected")}><Handle type="target" position={Position.Top} className="wf-handle" />{L(lang, data.label)}<Handle type="source" position={Position.Bottom} className="wf-handle" /></div>;
-  },
+  condition: ConditionNode,
+  branch: BranchNode,
   transfer: ({ data, selected }) => <NodeShell kind="transfer" selected={selected}><span dir="ltr" className="wf-mono">{data.number}</span></NodeShell>,
-  end: ({ data, selected }) => { const lang = useLang(); return <NodeShell kind="end" selected={selected} handles="in"><span className="wf-muted">{L(lang, data.note)}</span></NodeShell>; },
+  end: EndNode,
 };
 
 const edgeDefaults = { type: "smoothstep", markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 }, className: "wf-edge" };
@@ -112,7 +119,7 @@ const WT = {
 
 function Inspector({ node, update, remove, vars }) {
   const lang = useLang(); const t = WT[lang];
-  const tokenValue = useMemo(() => node?.type === "say" ? new TokenFieldValue(node.data.segments) : null, [node?.id]);
+  const [tokenValue] = useState(() => (node?.type === "say" ? new TokenFieldValue(node.data.segments) : null));
   const [tv, setTv] = useState(tokenValue);
   React.useEffect(() => setTv(tokenValue), [tokenValue]);
   if (!node) return <div className="wf-inspector is-empty"><Icon.Cursor /><p className="tv-desc">{t.pick}</p></div>;
@@ -163,7 +170,7 @@ function Inspector({ node, update, remove, vars }) {
 
 function Builder({ vars, height }) {
   const lang = useLang(); const t = WT[lang];
-  const init = useMemo(() => initialFlow(vars, lang), []);
+  const [init] = useState(() => initialFlow(vars, lang));
   const [nodes, setNodes, onNodesChange] = useNodesState(init.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(init.edges);
   const [env, setEnv] = useState("staging");
@@ -171,7 +178,7 @@ function Builder({ vars, height }) {
   const [confirm, setConfirm] = useState(false);
   const rf = useReactFlow();
   const selected = nodes.find((n) => n.selected);
-  const onConnect = useCallback((c) => setEdges((es) => addEdge({ ...c, ...edgeDefaults }, es)), []);
+  const onConnect = useCallback((c) => setEdges((es) => addEdge({ ...c, ...edgeDefaults }, es)), [setEdges]);
   const update = (id, patch) => setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } } : n)));
   const remove = (id) => { setNodes((ns) => ns.filter((n) => n.id !== id)); setEdges((es) => es.filter((e) => e.source !== id && e.target !== id)); };
   const add = (type) => {
@@ -226,7 +233,7 @@ function Builder({ vars, height }) {
         </div>
         <aside className="wf-side" aria-label={t.inspector}>
           <p className="wf-side-title">{t.inspector}</p>
-          <Inspector node={selected} update={update} remove={remove} vars={vars} />
+          <Inspector key={selected?.id ?? "none"} node={selected} update={update} remove={remove} vars={vars} />
         </aside>
       </div>
       <RAC.ModalOverlay isOpen={codeOpen} onOpenChange={setCodeOpen} isDismissable className="tv-overlay">

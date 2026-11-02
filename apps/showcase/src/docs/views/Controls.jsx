@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+"use client";
+import { useState } from "react";
 import { today, getLocalTimeZone, isWeekend, Time } from "@internationalized/date";
 import {
   Button, IconButton, Tooltip, ToggleButton, ToggleButtonGroup, SegmentButton, Toolbar, Separator, Link, FileTrigger,
   TextField, SearchField, NumberField, PhoneField, Checkbox, CheckboxGroup, Switch, RadioGroup, Radio, RadioCard, Slider, Form,
-  DateField, TimeField, DatePicker, DateRangePicker, Calendar, RangeCalendar, Badge, toast, useFormat,
-} from "../../ds.js";
+  DateField, TimeField, DatePicker, DateRangePicker, Calendar, RangeCalendar, Badge, toast, } from "../../ds.js";
 import * as Icon from "@truvar-ai/design-system/icons";
 import { useTr, useT, useLang } from "../i18n.jsx";
 import { Spec, ViewHeader } from "../ui.jsx";
@@ -185,7 +185,7 @@ export function Forms() {
           <Slider label={t.threshold} defaultValue={80} minValue={50} maxValue={99} formatOptions={{ style: "unit", unit: "percent" }} />
           <Slider label={tr("Deal size", "حجم الصفقة")} defaultValue={[200000, 1200000]} minValue={0} maxValue={2500000} step={50000}
             thumbLabels={[tr("Minimum", "الحد الأدنى"), tr("Maximum", "الحد الأقصى")]}
-            formatOptions={{ style: "currency", currency: "EGP", notation: "compact", maximumFractionDigits: 1 }} />
+            formatOptions={{ style: "currency", currency: "EGP", notation: "compact", minimumFractionDigits: 0, maximumFractionDigits: 1 }} />
         </div>
       </Spec>
       <SettingRowsSpec />

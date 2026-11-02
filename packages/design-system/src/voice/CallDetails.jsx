@@ -1,9 +1,10 @@
 // Transcript (synced to audio), call logs, cost breakdown, JSON viewer, code block.
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as RAC from "react-aria-components";
 import * as Icon from "../icons/icons.jsx";
 import { useCall } from "./CallPlayer.jsx";
 import { formatClock } from "./audio.js";
+import { numberFormat } from "../core/format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 const useLang = () => (RAC.useLocale().locale.startsWith("ar") ? "ar" : "en");
@@ -103,7 +104,7 @@ export function Transcript({ turns, events = [], maxHeight = 420 }) {
                 <Icon.Play width={10} height={10} /><span dir="ltr">{formatClock(it.start, locale)}</span>
               </RAC.Button>
               {it.speaker === "agent" && <Feedback value={fb[it.id]} onChange={(v) => setFb((f) => ({ ...f, [it.id]: v }))} />}
-              {it.latency != null && <span className="tv-tx-latency">{new Intl.NumberFormat(locale, { style: "unit", unit: "millisecond", unitDisplay: "short" }).format(it.latency)}</span>}
+              {it.latency != null && <span className="tv-tx-latency">{numberFormat(locale, { style: "unit", unit: "millisecond", unitDisplay: "short" }).format(it.latency)}</span>}
             </div>
           </li>
         ))}
@@ -126,7 +127,7 @@ export function CallLogs({ logs, maxHeight = 380 }) {
   const shown = logs.filter((l) => levels.has(l.level) && (!q || l.msg.toLowerCase().includes(q.toLowerCase())));
   const now = s?.time ?? -1;
   const currentIdx = shown.reduce((acc, l, i) => (l.t <= now ? i : acc), -1);
-  const nf = new Intl.NumberFormat(locale);
+  const nf = numberFormat(locale);
   return (
     <div className="tv-logs">
       <div className="tv-logs-bar">
@@ -161,7 +162,7 @@ export function CallLogs({ logs, maxHeight = 380 }) {
 /* ---------------- Cost breakdown ---------------- */
 export function CostBreakdown({ items, minutes, currency = "USD" }) {
   const lang = useLang(); const { locale } = RAC.useLocale();
-  const money = (v, d = 2) => new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+  const money = (v, d = 2) => numberFormat(locale, { style: "currency", currency, minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
   const total = items.reduce((a, b) => a + b.cost, 0);
   const t = lang === "ar" ? { total: "الإجمالي", perMin: "للدقيقة", share: "توزيع التكلفة" } : { total: "Total", perMin: "/ min", share: "Cost share" };
   return (
@@ -186,7 +187,7 @@ export function CostBreakdown({ items, minutes, currency = "USD" }) {
 function JsonNode({ k, v, depth, last }) {
   const [open, setOpen] = useState(depth < 2);
   const isObj = v && typeof v === "object";
-  const keyEl = k != null ? <><span className="j-key">"{k}"</span><span className="j-punc">: </span></> : null;
+  const keyEl = k != null ? <><span className="j-key">{`"${k}"`}</span><span className="j-punc">: </span></> : null;
   const comma = last ? "" : ",";
   if (!isObj) {
     const cls = typeof v === "string" ? "j-str" : typeof v === "number" ? "j-num" : v == null ? "j-null" : "j-bool";
@@ -218,7 +219,6 @@ export function JsonView({ value, title, maxHeight = 360 }) {
 }
 
 /* ---------------- Code block with tabs ---------------- */
-const KW = /\b(const|let|var|await|async|function|return|import|from|export|new|if|else|for|of|in|def|print|true|false|null|None|True|False)\b/g;
 function highlight(line, lang) {
   const out = []; let rest = line; let key = 0;
   const rules = [

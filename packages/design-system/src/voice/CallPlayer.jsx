@@ -1,10 +1,11 @@
 // Stereo call player: one shared session (audio element + Web Audio gains per channel) drives
 // the mini, standard and expanded players, the transcript and the logs, so they all stay in sync.
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import * as RAC from "react-aria-components";
 import WaveSurfer from "wavesurfer.js";
 import * as Icon from "../icons/icons.jsx";
 import { encodeWav, mixToMono, findSilences, computePeaks, formatClock } from "./audio.js";
+import { numberFormat } from "../core/format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 const CallCtx = createContext(null);
@@ -111,18 +112,21 @@ export function CallSessionProvider({ recording, children }) {
 
 /* ---------------- Theme-aware colours for canvas ---------------- */
 function useCssColors(names) {
-  const read = () => {
-    const cs = getComputedStyle(document.documentElement);
-    return Object.fromEntries(names.map((n) => [n, cs.getPropertyValue(n).trim() || "#888"]));
-  };
-  const [c, setC] = useState(read);
+  const key = names.join(" ");
+  // Read once mounted: there is no page to read on the server, and the canvas only draws in the browser
+  const [c, setC] = useState(() => Object.fromEntries(names.map((n) => [n, "#888"])));
   useEffect(() => {
+    const read = () => {
+      const cs = getComputedStyle(document.documentElement);
+      return Object.fromEntries(key.split(" ").map((n) => [n, cs.getPropertyValue(n).trim() || "#888"]));
+    };
+    setC(read());
     const mo = new MutationObserver(() => setC(read()));
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     const mq = window.matchMedia("(prefers-color-scheme: dark)"); const on = () => setC(read());
     mq.addEventListener?.("change", on);
     return () => { mo.disconnect(); mq.removeEventListener?.("change", on); };
-  }, []);
+  }, [key]);
   return c;
 }
 /* Opaque blend of a colour with the surface. (wavesurfer masks the progress layer with the unplayed
@@ -238,7 +242,7 @@ function Scrubber({ compact }) {
 }
 function SpeedMenu() {
   const s = useCall(); const t = usePlayerText(); const { locale } = RAC.useLocale();
-  const fmt = (r) => `${new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(r)}×`;
+  const fmt = (r) => `${numberFormat(locale, { maximumFractionDigits: 2 }).format(r)}×`;
   return (
     <RAC.MenuTrigger>
       <RAC.Button className="tv-chip-btn" aria-label={`${t.speed}: ${fmt(s.rate)}`}>{fmt(s.rate)}</RAC.Button>
@@ -270,7 +274,6 @@ function DownloadMenu({ filename }) {
 
 /* ---------------- Player sizes ---------------- */
 export function MiniPlayer() {
-  const s = useCall();
   return (
     <div className="tv-player tv-player--mini">
       <PlayButton size="sm" />

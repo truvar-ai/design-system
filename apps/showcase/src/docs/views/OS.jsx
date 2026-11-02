@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import * as RAC from "react-aria-components";
 import {
   SystemBar, VoiceDock, ListeningView, AgentTaskCard, ApprovalCard, DoneCard, NotificationCard, NotificationStack, OSTaskCard,
-  AppWindow, AgentCursor, DeviceCard, SmartTile, PermissionRow, LockScreen, useNow, BrandAvatar, OrbitMark, SwitchRow, toast, Badge,
-  WifiIcon, BatteryIcon, CloudIcon, MicIcon, CameraIcon, BluetoothIcon, LockIcon, LocationIcon, AirplaneIcon, MoonIcon, ShieldIcon,
+  AppWindow, AgentCursor, DeviceCard, SmartTile, PermissionRow, LockScreen, useNow, BrandAvatar, OrbitMark, SwitchRow, toast, WifiIcon, BatteryIcon, CloudIcon, MicIcon, CameraIcon, BluetoothIcon, LockIcon, LocationIcon, AirplaneIcon, MoonIcon, ShieldIcon,
   DevicesIcon, FaceIdIcon, KeyboardIcon, AppsIcon, LightIcon, ThermoIcon, TvIcon, DoorIcon, LaptopIcon, PhoneDeviceIcon, ServerCloudIcon,
   HomeIcon, SpreadsheetIcon, ChatIcon, CardIcon, TrashIcon, FolderIcon, GlobeIcon, HistoryIcon,
 } from "../../ds.js";
@@ -11,6 +11,7 @@ import * as Icon from "@truvar-ai/design-system/icons";
 import { useTr, useLang } from "../i18n.jsx";
 import { Spec, ViewHeader } from "../ui.jsx";
 import { OS_T } from "../osText.js";
+import { numberFormat } from "@truvar-ai/design-system";
 
 const useOS = () => OS_T[useLang()];
 const cx = (...c) => c.filter(Boolean).join(" ");
@@ -46,7 +47,7 @@ export function OSPrototype() {
     const words = t.heard.split(" ").length;
     const id = setInterval(() => setHeardLen((l) => Math.min(words + 1, l + 1)), 180);
     return () => clearInterval(id);
-  }, [stage, lang]);
+  }, [stage, t.heard]);
   const words = t.heard.split(" ");
   const stageNames = { lock: tr("Lock", "القفل"), home: tr("Home", "الرئيسية"), listening: tr("Listening", "الاستماع"), working: tr("Working", "التنفيذ"), approval: tr("Approval", "الموافقة"), done: tr("Done", "تم") };
 
@@ -85,7 +86,7 @@ export function OSPrototype() {
                   <div className="os-suggest">
                     {t.home.suggestions.map(([cmd, meta], i) => (
                       <RAC.Button key={i} className={cx("os-suggest-card", i === 0 && "is-gold")} onPress={() => (i === 0 ? setStage("listening") : toast({ tone: "info", title: cmd }))}>
-                        <span className="os-suggest-icon">{[<Icon.FileText />, <DevicesIcon />, <Icon.Mail />][i]}</span>
+                        <span className="os-suggest-icon">{[<Icon.FileText key="filetext-0" />, <DevicesIcon key="devices-1" />, <Icon.Mail key="mail-2" />][i]}</span>
                         <b dir="auto">{cmd}</b><span className="tv-desc">{meta}</span>
                       </RAC.Button>
                     ))}
@@ -123,16 +124,16 @@ export function OSPrototype() {
 export function OSSystem() {
   const tr = useTr(); const t = useOS(); const now = useNow(); const lang = useLang();
   const icons = [
-    [<WifiIcon strength={3} />, "Wi-Fi", "واي فاي"], [<WifiIcon strength={1} />, tr("Weak signal", "إشارة ضعيفة"), ""], [<WifiIcon off />, tr("Wi-Fi off", "واي فاي مقفول"), ""],
-    [<BatteryIcon level={0.86} />, tr("Battery", "البطارية"), ""], [<BatteryIcon level={0.12} />, tr("Battery low", "البطارية ضعيفة"), ""], [<BatteryIcon level={0.5} charging />, tr("Charging", "بيشحن"), ""],
-    [<CloudIcon state="synced" />, tr("Synced", "متزامن"), ""], [<CloudIcon state="syncing" />, tr("Syncing", "بيتزامن"), ""], [<CloudIcon state="offline" />, tr("Offline", "مش متصل"), ""],
-    [<MicIcon />, tr("Microphone", "المايك"), ""], [<CameraIcon />, tr("Camera", "الكاميرا"), ""], [<BluetoothIcon />, "Bluetooth", ""],
-    [<LocationIcon />, tr("Location", "الموقع"), ""], [<AirplaneIcon />, tr("Airplane mode", "وضع الطيران"), ""], [<MoonIcon />, tr("Do not disturb", "عدم الإزعاج"), ""],
-    [<ShieldIcon />, tr("Protected", "محمي"), ""], [<LockIcon />, tr("Locked", "مقفول"), ""], [<FaceIdIcon />, tr("Face unlock", "فتح بالوجه"), ""],
-    [<DevicesIcon />, tr("Devices", "الأجهزة"), ""], [<LaptopIcon />, tr("Laptop", "لابتوب"), ""], [<PhoneDeviceIcon />, tr("Phone", "موبايل"), ""],
-    [<ServerCloudIcon />, tr("Cloud server", "سيرفر سحابي"), ""], [<HomeIcon />, tr("Home", "البيت"), ""], [<KeyboardIcon />, tr("Keyboard", "الكيبورد"), ""],
-    [<AppsIcon />, tr("Apps", "التطبيقات"), ""], [<LightIcon />, tr("Lights", "النور"), ""], [<ThermoIcon />, tr("Temperature", "الحرارة"), ""],
-    [<TvIcon />, "TV", ""], [<DoorIcon />, tr("Door", "الباب"), ""], [<CardIcon />, tr("Payments", "الدفع"), ""],
+    [<WifiIcon key="wifi-3" strength={3} />, "Wi-Fi", "واي فاي"], [<WifiIcon key="wifi-4" strength={1} />, tr("Weak signal", "إشارة ضعيفة"), ""], [<WifiIcon key="wifi-5" off />, tr("Wi-Fi off", "واي فاي مقفول"), ""],
+    [<BatteryIcon key="battery-6" level={0.86} />, tr("Battery", "البطارية"), ""], [<BatteryIcon key="battery-7" level={0.12} />, tr("Battery low", "البطارية ضعيفة"), ""], [<BatteryIcon key="battery-8" level={0.5} charging />, tr("Charging", "بيشحن"), ""],
+    [<CloudIcon key="cloud-9" state="synced" />, tr("Synced", "متزامن"), ""], [<CloudIcon key="cloud-10" state="syncing" />, tr("Syncing", "بيتزامن"), ""], [<CloudIcon key="cloud-11" state="offline" />, tr("Offline", "مش متصل"), ""],
+    [<MicIcon key="mic-12" />, tr("Microphone", "المايك"), ""], [<CameraIcon key="camera-13" />, tr("Camera", "الكاميرا"), ""], [<BluetoothIcon key="bluetooth-14" />, "Bluetooth", ""],
+    [<LocationIcon key="location-15" />, tr("Location", "الموقع"), ""], [<AirplaneIcon key="airplane-16" />, tr("Airplane mode", "وضع الطيران"), ""], [<MoonIcon key="moon-17" />, tr("Do not disturb", "عدم الإزعاج"), ""],
+    [<ShieldIcon key="shield-18" />, tr("Protected", "محمي"), ""], [<LockIcon key="lock-19" />, tr("Locked", "مقفول"), ""], [<FaceIdIcon key="faceid-20" />, tr("Face unlock", "فتح بالوجه"), ""],
+    [<DevicesIcon key="devices-21" />, tr("Devices", "الأجهزة"), ""], [<LaptopIcon key="laptop-22" />, tr("Laptop", "لابتوب"), ""], [<PhoneDeviceIcon key="phonedevice-23" />, tr("Phone", "موبايل"), ""],
+    [<ServerCloudIcon key="servercloud-24" />, tr("Cloud server", "سيرفر سحابي"), ""], [<HomeIcon key="home-25" />, tr("Home", "البيت"), ""], [<KeyboardIcon key="keyboard-26" />, tr("Keyboard", "الكيبورد"), ""],
+    [<AppsIcon key="apps-27" />, tr("Apps", "التطبيقات"), ""], [<LightIcon key="light-28" />, tr("Lights", "النور"), ""], [<ThermoIcon key="thermo-29" />, tr("Temperature", "الحرارة"), ""],
+    [<TvIcon key="tv-30" />, "TV", ""], [<DoorIcon key="door-31" />, tr("Door", "الباب"), ""], [<CardIcon key="card-32" />, tr("Payments", "الدفع"), ""],
   ];
   return (
     <>
@@ -220,7 +221,7 @@ function useTyping(text, run = true, speed = 140, pauseMs = 2200) {
     const tick = (k) => { setN(k); timer = setTimeout(() => (k >= text.length ? (setN(text.length), timer = setTimeout(() => tick(0), pauseMs)) : tick(k + 1)), k >= text.length ? pauseMs : speed); };
     tick(0);
     return () => clearTimeout(timer);
-  }, [text, run]);
+  }, [text, run, speed, pauseMs]);
   return text.slice(0, n);
 }
 export function OSWorkspace() {
@@ -229,7 +230,7 @@ export function OSWorkspace() {
   const typed = useTyping(P[3]);
   const typing = typed.length < P[3].length;
   const remoteTyped = useTyping(lang === "ar" ? "٩٣٬١٠٠" : "93,100", true, 260, 2400);
-  const nf = (v) => new Intl.NumberFormat(lang === "ar" ? "ar-EG" : "en-US").format(v);
+  const nf = (v) => numberFormat(lang === "ar" ? "ar-EG" : "en-US").format(v);
   return (
     <>
       <ViewHeader viewId="os-workspace" intro={tr("When Taysir works across apps, you see each window and its cursor. Nothing happens behind your back.", "لما تيسير يشتغل على أكتر من تطبيق، بتشوف كل شاشة والمؤشر بتاعه. مفيش حاجة بتحصل من وراك.")} />
@@ -314,9 +315,9 @@ export function OSHome() {
         <div className="os-work-grid">
           {t.work.items.map(([title, status, tone, hl], i) => (
             <OSTaskCard key={i} title={title} status={status} tone={tone} highlight={hl} action={t.work.open} onAction={() => {}}
-              icon={[<Icon.Users />, <Icon.FileText />, <GlobeIcon size={22} />][i]} />
+              icon={[<Icon.Users key="users-33" />, <Icon.FileText key="filetext-34" />, <GlobeIcon key="globe-35" size={22} />][i]} />
           ))}
-          <div className="os-work-new"><span className="os-work-icon"><Icon.Plus /></span><div><h4 style={{ margin: 0 }} className="os-new-title">{t.work.newTitle}</h4><span className="tv-desc">{t.work.newHint}</span></div></div>
+          <div className="os-work-new"><span className="os-work-icon"><Icon.Plus /></span><div><h3 style={{ margin: 0 }} className="os-new-title">{t.work.newTitle}</h3><span className="tv-desc">{t.work.newHint}</span></div></div>
         </div>
         <div className="os-cloud-strip"><ServerCloudIcon size={18} /><span>{t.work.cloud}</span>{t.work.chips.map((c, i) => <span key={i} className="os-chip">{i === 0 ? <Icon.Clock width={13} height={13} /> : <HistoryIcon size={13} />}{c}</span>)}</div>
       </Spec>
@@ -325,7 +326,7 @@ export function OSHome() {
           <DeviceCard icon={<LaptopIcon />} name={D.laptop[0]} meta={D.laptop[1]} command={D.laptop[2]} action={D.laptop[3]} onAction={() => {}} />
           <DeviceCard icon={<ServerCloudIcon />} tone="navy" name={D.cloud[0]} meta={D.cloud[1]} command={D.cloud[2]} action={D.cloud[3]} onAction={() => {}} />
           <div className="os-this-device">
-            <h4><LaptopIcon size={20} />Terra 1 Pro</h4>
+            <h3><LaptopIcon size={20} />Terra 1 Pro</h3>
             <BrandAvatar size={96} />
             <p>{D.here}</p>
             <span className="os-pill">{D.notApp}</span>
@@ -334,7 +335,7 @@ export function OSHome() {
           <DeviceCard icon={<HomeIcon />} tone="gold" name={D.home[0]} meta={D.home[1]} command={D.home[2]}>
             <div className="os-tiles">
               {D.tiles.map(([label, on, off], i) => (
-                <SmartTile key={i} icon={[<LightIcon />, <ThermoIcon />, <TvIcon />, <DoorIcon />][i]} label={label} onLabel={on} offLabel={off}
+                <SmartTile key={i} icon={[<LightIcon key="light-36" />, <ThermoIcon key="thermo-37" />, <TvIcon key="tv-38" />, <DoorIcon key="door-39" />][i]} label={label} onLabel={on} offLabel={off}
                   isSelected={tiles[i]} onChange={(v) => setTiles((x) => x.map((y, j) => (j === i ? v : y)))} />
               ))}
             </div>
@@ -360,7 +361,7 @@ export function OSPermissions() {
         <div className="os-card os-perm-card">
           <div className="os-perms">
             {P.rows.map(([label, desc], i) => (
-              <PermissionRow key={i} icon={[<FolderIcon />, <GlobeIcon />, <ChatIcon />, <DevicesIcon />, <TrashIcon />, <CardIcon />][i]} label={label} description={desc || undefined}
+              <PermissionRow key={i} icon={[<FolderIcon key="folder-40" />, <GlobeIcon key="globe-41" />, <ChatIcon key="chat-42" />, <DevicesIcon key="devices-43" />, <TrashIcon key="trash-44" />, <CardIcon key="card-45" />][i]} label={label} description={desc || undefined}
                 sensitive={i === 3 || i === 5} value={vals[i]} onChange={(v) => setVals((x) => x.map((y, j) => (j === i ? v : y)))} options={opts} />
             ))}
           </div>

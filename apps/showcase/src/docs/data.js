@@ -7,9 +7,9 @@ export const OWNERS = [
 ];
 export const STAGES = [
   { id: "lead", en: "New lead", ar: "عميل جديد", tone: "neutral" },
-  { id: "qualified", en: "Qualified", ar: "مؤهل", tone: "navy" },
-  { id: "proposal", en: "Proposal sent", ar: "عرض مُرسل", tone: "accent" },
-  { id: "negotiation", en: "Negotiation", ar: "تفاوض", tone: "strong" },
+  { id: "qualified", en: "Qualified", ar: "مؤهل", tone: "violet" },
+  { id: "proposal", en: "Proposal sent", ar: "عرض مُرسل", tone: "warning" },
+  { id: "negotiation", en: "Negotiation", ar: "تفاوض", tone: "info" },
   { id: "won", en: "Won", ar: "تم الفوز", tone: "success" },
   { id: "lost", en: "Lost", ar: "خسارة", tone: "danger" },
 ];

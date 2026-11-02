@@ -1,6 +1,7 @@
 // Audio helpers for the voice components.
 // synthCall() builds a believable stereo call recording in the browser (agent = left, customer = right)
 // so demos need no audio files. encodeWav() / mixToMono() power the downloads. findSilences() powers "skip silence".
+import { numberFormat } from "../core/format.js";
 
 const SR = 16000;
 
@@ -91,7 +92,7 @@ export function computePeaks(data, buckets = 800) {
 
 export const formatClock = (sec, locale = "en-US") => {
   const s = Math.max(0, Math.floor(sec || 0));
-  const nf = new Intl.NumberFormat(locale, { minimumIntegerDigits: 2, useGrouping: false });
+  const nf = numberFormat(locale, { minimumIntegerDigits: 2, useGrouping: false });
   const m = Math.floor(s / 60);
-  return `${new Intl.NumberFormat(locale, { useGrouping: false }).format(m)}:${nf.format(s % 60)}`;
+  return `${numberFormat(locale, { useGrouping: false }).format(m)}:${nf.format(s % 60)}`;
 };

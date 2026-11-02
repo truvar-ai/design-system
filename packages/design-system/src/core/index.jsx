@@ -1,9 +1,10 @@
 // @truvar-ai/design-system — Truvar.ai components built on React Aria Components.
 // React Aria supplies behaviour + accessibility; this file supplies the Truvar look and API.
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as RAC from "react-aria-components";
 import * as Icon from "../icons/icons.jsx";
 import { OrbitMark } from "../brand/Brand.jsx";
+import { numberFormat } from "./format.js";
 
 /* Built-in strings, so every product gets the same wording in both languages */
 const MESSAGES = {
@@ -18,7 +19,7 @@ export function useMessages() {
 }
 const useNumber = () => {
   const { locale } = RAC.useLocale();
-  return (n) => new Intl.NumberFormat(locale).format(n);
+  return (n) => numberFormat(locale).format(n);
 };
 
 const cx = (...c) => c.filter(Boolean).join(" ");
@@ -104,11 +105,13 @@ export function Radio({ children, ...props }) {
 }
 
 /* ---------- ListBox items (shared by Select / ComboBox) ---------- */
-export function Item({ children, description, ...props }) {
+// icon: shown before the label, in the list and in the Select button once chosen (logos, avatars, flags)
+export function Item({ children, description, icon, ...props }) {
   const textValue = props.textValue ?? (typeof children === "string" ? children : undefined);
   return (
     <RAC.ListBoxItem {...props} textValue={textValue} className="tv-item">
-      <span>
+      {icon && <span className="tv-item-icon" aria-hidden="true">{icon}</span>}
+      <span className="tv-item-text">
         <RAC.Text slot="label">{children}</RAC.Text>
         {description && <RAC.Text slot="description" className="tv-item-desc">{description}</RAC.Text>}
       </span>
@@ -124,8 +127,8 @@ export function Select({ label, description, placeholder, items, children, ...pr
     <RAC.Select {...props} placeholder={placeholder ?? m.choose} className="tv-field">
       {label && <RAC.Label className="tv-label">{label}</RAC.Label>}
       <RAC.Button className="tv-select-btn">
-        <RAC.SelectValue />
-        <Icon.ChevronDown />
+        <RAC.SelectValue className="tv-select-value" />
+        <Icon.ChevronDown className="tv-select-chev" />
       </RAC.Button>
       <Description>{description}</Description>
       <FieldError />
@@ -197,7 +200,8 @@ export const TabPanel = (p) => <RAC.TabPanel {...p} className="tv-tabpanel" />;
 export function Slider({ label, thumbLabels, ...props }) {
   return (
     <RAC.Slider {...props} className="tv-slider">
-      <RAC.Label className="tv-label">{label}</RAC.Label>
+      {/* Without a visible label, the slider is named by aria-label; an empty label would leave it unnamed */}
+      {label && <RAC.Label className="tv-label">{label}</RAC.Label>}
       <RAC.SliderOutput />
       <RAC.SliderTrack className="tv-slider-track">
         {({ state }) => {
@@ -230,7 +234,7 @@ export function DatePicker({ label, description, ...props }) {
       </RAC.Group>
       <Description>{description}</Description>
       <FieldError />
-      <RAC.Popover className="tv-popover" offset={6} style={{ maxHeight: "none" }}>
+      <RAC.Popover className="tv-popover tv-popover--date" offset={6} placement="bottom end">
         <RAC.Dialog className="tv-focus" aria-label={m.chooseDate}>
           <RAC.Calendar className="tv-calendar">
             <header>
@@ -395,5 +399,10 @@ export * from "./more.jsx";
 export * from "./intl.jsx";
 export { Flag } from "./Flag.jsx";
 export * from "./countries.js";
+export * from "./format.js";
 export * from "./phase2.jsx";
-export { Logo, OrbitMark, BrandAvatar, OrbitLoader } from "../brand/Brand.jsx";
+export * from "./bottomnav.jsx";
+export * from "./systembars.js";
+export * from "./shell.jsx";
+export { Logo, OrbitMark, BrandAvatar, OrbitLoader, BrandProvider, useBrand, BRANDS } from "../brand/Brand.jsx";
+export { EasySocialsMark } from "../brand/EasySocials.jsx";

@@ -8,6 +8,14 @@ export default defineConfig({
     charts: "src/charts/index.js",
     voice: "src/voice/index.js",
     os: "src/os/index.js",
+    crm: "src/crm/index.js",
+    widget: "src/widget/index.js",
+    // Internal files, not import paths of their own: the flags (every country's SVG) and the phone number
+    // data are large, so each lives in its own file. An app's bundler then leaves them out unless the app
+    // renders a Flag, PhoneField or CountryPicker.
+    "internal/flag": "src/core/Flag.jsx",
+    "internal/intl": "src/core/intl.jsx",
+    "internal/countries": "src/core/countries.js",
   },
   format: ["esm"],
   target: "es2020",

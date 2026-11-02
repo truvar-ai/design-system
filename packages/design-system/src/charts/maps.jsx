@@ -1,6 +1,6 @@
 // @truvar/ui WorldMap: Natural Earth 1:110m (public domain) drawn with d3-geo, zoom with d3-zoom (ISC).
 // Choropleth, continent focus, hover tooltip, selection, markers, zoom controls and a table view.
-import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import * as RAC from "react-aria-components";
 import { geoEqualEarth, geoPath } from "d3-geo";
 import { zoom as d3zoom, zoomIdentity } from "d3-zoom";
@@ -9,6 +9,7 @@ import { feature, merge } from "topojson-client";
 import world from "./geo/world-110m.json";
 import * as Icon from "../icons/icons.jsx";
 import { Flag } from "../core/Flag.jsx";
+import { NAMES } from "../core/country-names.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 const W = 960, H = 500;
@@ -40,14 +41,10 @@ function buildFeatures(pov) {
   return out.filter((f) => f.properties.cont !== "Antarctica");
 }
 
-const names = {};
-const displayName = (lang) => {
-  if (!names[lang]) { try { names[lang] = new Intl.DisplayNames([lang], { type: "region" }); } catch { names[lang] = null; } }
-  return names[lang];
-};
+// The same names as the phone and country inputs, so the server and the browser agree
 export function countryName(p, lang) {
-  const dn = displayName(lang);
-  if (p.iso2 && dn) { try { const n = dn.of(p.iso2); if (n && n !== p.iso2) return n; } catch {} }
+  const n = p.iso2 && NAMES[p.iso2];
+  if (n) return lang === "ar" ? n[1] : n[0];
   return lang === "ar" ? p.ar : p.en;
 }
 
@@ -123,9 +120,10 @@ export function WorldMap({
 
   const inFocus = (f) => continent === "all" || (continent === "mena" ? MENA.includes(f.id) : f.properties.cont === continent);
   useEffect(() => {
-    if (continent === "all") animateTo(zoomIdentity);
-    else fitTo(features.filter(inFocus).filter((f) => !(continent === "Europe" && ["RUS"].includes(f.id))));
-  }, [continent, features]);
+    if (continent === "all") { animateTo(zoomIdentity); return; }
+    const focus = (f) => (continent === "mena" ? MENA.includes(f.id) : f.properties.cont === continent);
+    fitTo(features.filter(focus).filter((f) => !(continent === "Europe" && ["RUS"].includes(f.id))));
+  }, [continent, features, fitTo, animateTo]);
 
   const zoomBy = (factor) => {
     const z = zoomRef.current; if (!z) return;

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+"use client";
+import { useState, useMemo } from "react";
 import {
   Flag, CountryPicker, SearchField, Table, TableHeader, Column, TableBody, Row, Cell, MenuButton, MenuItem,
   toast, useFormat, COUNTRIES, countryMatches, countryByCode, Badge,
@@ -22,7 +23,7 @@ export function Countries() {
   const nameOf = (c) => (lang === "ar" ? c.ar : c.en);
   const rows = useMemo(() => {
     const r = COUNTRIES.filter((c) => countryMatches(c, query));
-    const key = { name: (c) => nameOf(c), code: (c) => c.code, dial: (c) => Number(c.dial) }[sort.column];
+    const key = { name: (c) => (lang === "ar" ? c.ar : c.en), code: (c) => c.code, dial: (c) => Number(c.dial) }[sort.column];
     const d = sort.direction === "descending" ? -1 : 1;
     return r.sort((a, b) => {
       const x = key(a), y = key(b);

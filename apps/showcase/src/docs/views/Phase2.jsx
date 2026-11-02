@@ -1,5 +1,6 @@
+"use client";
 // Demos for the phase 2 components. Each export is a <Spec> placed on the matching docs page.
-import React, { useState, useMemo } from "react";
+import { useState } from "react";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import * as RAC from "react-aria-components";
 import {

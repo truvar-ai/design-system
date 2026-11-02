@@ -1,19 +1,30 @@
 name: CI
 
+# Every pull request and every push to main: lint, check for a changeset, build everything.
 on:
   pull_request:
   push:
     branches: [main]
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the changeset check compares with main
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Lint
+        run: pnpm lint
+      # A pull request that changes the published package needs a changeset (pnpm changeset),
+      # so every change reaches the changelog. The release bot's own pull request is exempt.
+      - name: Changeset
+        if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
+        run: pnpm changeset status --since=origin/${{ github.base_ref }}
+      - name: Build
+        run: pnpm build

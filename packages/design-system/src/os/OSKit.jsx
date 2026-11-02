@@ -1,10 +1,11 @@
 // Truvar OS kit: system UI and agent surfaces for an agentic operating system.
 // Built on React Aria + Truvar tokens. Content comes in through props.
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as RAC from "react-aria-components";
 import * as Icon from "../icons/icons.jsx";
 import * as S from "../icons/SystemIcons.jsx";
 import { BrandAvatar, OrbitMark, Avatar } from "../core/index.jsx";
+import { dateFormat, numberFormat } from "../core/format.js";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 const useLocale = () => RAC.useLocale().locale;
@@ -15,14 +16,14 @@ export function useNow(intervalMs = 15000) {
   useEffect(() => { const id = setInterval(() => setNow(new Date()), intervalMs); return () => clearInterval(id); }, [intervalMs]);
   return now;
 }
-export function formatTime(d, locale) { return new Intl.DateTimeFormat(locale, { hour: "numeric", minute: "2-digit" }).format(d); }
-export function formatDay(d, locale) { return new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long" }).format(d); }
+export function formatTime(d, locale) { return dateFormat(locale, { hour: "numeric", minute: "2-digit" }).format(d); }
+export function formatDay(d, locale) { return dateFormat(locale, { weekday: "long", day: "numeric", month: "long" }).format(d); }
 
 /* ---------- System bar ---------- */
 export function SystemBar({ user, time, battery = { level: 0.86 }, wifi = 3, devices, mic, camera, cloud = "synced", onAssistant, labels }) {
   const locale = useLocale();
-  const nf = new Intl.NumberFormat(locale);
-  const pct = new Intl.NumberFormat(locale, { style: "percent" }).format(battery.level);
+  const nf = numberFormat(locale);
+  const pct = numberFormat(locale, { style: "percent" }).format(battery.level);
   return (
     <header className="os-bar">
       <div className="os-bar-start">
@@ -155,7 +156,7 @@ export function ApprovalCard({ title, subtitle, recipient, attachment, message, 
 
 /* ---------- Done ---------- */
 export function DoneCard({ title, subtitle, followUp, stats, labels }) {
-  const locale = useLocale(); const nf = new Intl.NumberFormat(locale);
+  const locale = useLocale(); const nf = numberFormat(locale);
   return (
     <section className="os-done" aria-label={title}>
       <div className="os-card os-done-main">
@@ -208,12 +209,13 @@ export function NotificationStack({ lead, rest, restLabel, icons = [] }) {
 }
 
 /* ---------- My work task card ---------- */
-export function OSTaskCard({ icon, title, status, tone = "neutral", action, onAction, highlight }) {
+export function OSTaskCard({ icon, title, status, tone = "neutral", action, onAction, highlight, headingLevel = 3 }) {
+  const H = `h${headingLevel}`;
   return (
     <article className={cx("os-work", highlight && "is-highlight")}>
       <span className={cx("os-work-icon", highlight && "is-gold")}>{icon}</span>
       <div className="os-work-text">
-        <h4 dir="auto">{title}</h4>
+        <H dir="auto">{title}</H>
         <p className={cx("os-work-status", `is-${tone}`)}>
           {tone === "done" ? <span className="os-work-dot is-done"><Icon.Check /></span> : tone === "running" ? <span className="os-work-dot is-running" /> : <span className="os-work-dot" />}
           <span dir="auto">{status}</span>
@@ -225,10 +227,11 @@ export function OSTaskCard({ icon, title, status, tone = "neutral", action, onAc
 }
 
 /* ---------- App windows + agent cursor ---------- */
-export function AppWindow({ icon, title, badge, active, children }) {
+export function AppWindow({ icon, title, badge, active, children, headingLevel = 3 }) {
+  const H = `h${headingLevel}`;
   return (
     <section className={cx("os-window", active && "is-active")} aria-label={title}>
-      <header className="os-window-head"><span className="os-window-icon">{icon}</span><h4>{title}</h4>{badge && <span className="os-window-badge"><span className="os-rec-dot" />{badge}</span>}</header>
+      <header className="os-window-head"><span className="os-window-icon">{icon}</span><H>{title}</H>{badge && <span className="os-window-badge"><span className="os-rec-dot" />{badge}</span>}</header>
       <div className="os-window-body">{children}</div>
     </section>
   );
@@ -243,12 +246,13 @@ export function AgentCursor({ x, y, label }) {
 }
 
 /* ---------- Devices ---------- */
-export function DeviceCard({ icon, name, meta, online = true, command, action, onAction, tone, children }) {
+export function DeviceCard({ icon, name, meta, online = true, command, action, onAction, tone, children, headingLevel = 3 }) {
+  const H = `h${headingLevel}`;
   return (
     <article className={cx("os-device", tone && `is-${tone}`)}>
       <header className="os-device-head">
         <span className={cx("os-device-icon", tone && `is-${tone}`)}>{icon}</span>
-        <div><h4 dir="auto">{name}</h4><p className="tv-desc"><span className={cx("os-online", online && "is-on")} />{meta}</p></div>
+        <div><H dir="auto">{name}</H><p className="tv-desc"><span className={cx("os-online", online && "is-on")} />{meta}</p></div>
       </header>
       {children}
       {command && <p className="os-command"><S.MicIcon size={14} /><span dir="auto">“{command}”</span></p>}
@@ -287,7 +291,7 @@ export function PermissionRow({ icon, label, description, value, onChange, optio
 export function LockScreen({ user, time, notifications, onUnlock, battery, wifi, labels, osName = "Truvar OS", device }) {
   const locale = useLocale();
   const [pw, setPw] = useState(false);
-  const pct = new Intl.NumberFormat(locale, { style: "percent" }).format(battery.level);
+  const pct = numberFormat(locale, { style: "percent" }).format(battery.level);
   return (
     <section className="os-lock" aria-label={labels.locked}>
       <div className="os-lock-ambient" aria-hidden="true">{Array.from({ length: 8 }, (_, i) => <span key={i} className={`os-amb a${i}`} />)}</div>

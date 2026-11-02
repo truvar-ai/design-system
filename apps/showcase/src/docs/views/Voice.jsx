@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+"use client";
+import { useMemo, useState } from "react";
 import * as RAC from "react-aria-components";
 import {
   CallSessionProvider, CallPlayer, MiniPlayer, Transcript, CallLogs, CostBreakdown, JsonView, CodeBlock, CopyButton, LiveCall,
@@ -90,7 +91,7 @@ export function CallReview() {
 
 /* ---------------- Player sizes ---------------- */
 export function PlayerView() {
-  const tr = useTr(); const L = useL(); const { locale } = RAC.useLocale();
+  const tr = useTr(); const L = useL();
   const recording = useMemo(getRecording, []);
   return (
     <>

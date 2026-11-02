@@ -1,0 +1,38 @@
+name: Release
+
+# On every push to main:
+# - changesets waiting: opens (or updates) the "Version packages" pull request, which bumps the version
+#   and writes CHANGELOG.md. Nothing is published yet.
+# - that pull request merged: builds the package, publishes it to npm with provenance and creates a GitHub release.
+on:
+  push:
+    branches: [main]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write # push the version commit and tags, create GitHub releases
+  pull-requests: write # open the "Version packages" pull request
+  id-token: write # npm provenance: proves the package was built here, from this repo
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: changesets/action@v1
+        with:
+          version: pnpm version-packages
+          publish: pnpm release
+          title: Version packages
+          commit: Version packages
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # an npm granular access token, saved in the repo's Actions secrets

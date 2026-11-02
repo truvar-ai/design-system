@@ -1,5 +1,5 @@
 // HubSpot-style record panel: a Drawer with editable properties, associations and an activity timeline.
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Heading } from "react-aria-components";
 import {
   Drawer, Button, IconButton, Tooltip, TextField, Select, Item, Tabs, TabList, Tab, TabPanel,
@@ -53,7 +53,7 @@ export function RecordPanel({ contact, isOpen, onOpenChange, side = "end", onSav
       )}
     >
       <div className="rp-actions">
-        {[[<Icon.Mail />, tr("Email", "بريد")], [<Icon.Phone />, tr("Call", "اتصال")], [<Icon.FileText />, tr("Note", "ملاحظة")], [<Icon.Calendar />, tr("Meeting", "اجتماع")]].map(([ic, l], i) => (
+        {[[<Icon.Mail key="mail-0" />, tr("Email", "بريد")], [<Icon.Phone key="phone-1" />, tr("Call", "اتصال")], [<Icon.FileText key="filetext-2" />, tr("Note", "ملاحظة")], [<Icon.Calendar key="calendar-3" />, tr("Meeting", "اجتماع")]].map(([ic, l], i) => (
           <div className="rp-action" key={i}>
             <Tooltip content={l}><IconButton label={l}>{ic}</IconButton></Tooltip>
             <span>{l}</span>

@@ -4,5 +4,12 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["showcase"]
+  "ignore": [
+    "showcase",
+    "docs"
+  ],
+  "privatePackages": {
+    "version": false,
+    "tag": false
+  }
 }

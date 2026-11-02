@@ -1,22 +1,43 @@
 {
   "name": "truvar-design-system",
   "private": true,
-  "description": "Truvar.ai design system monorepo: tokens, the @truvar-ai/design-system package and its docs.",
+  "description": "Truvar.ai design system monorepo: tokens, the @truvar-ai/design-system package, its showcase and the docs site.",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/truvar-ai/design-system.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/truvar-ai/design-system.git"
+  },
   "packageManager": "pnpm@10.19.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "build": "turbo run build",
     "dev": "turbo run dev --filter=showcase...",
+    "build": "turbo run build",
+    "lint": "eslint .",
+    "showcase:dev": "turbo run dev --filter=showcase...",
+    "showcase:build": "turbo run build --filter=showcase...",
+    "showcase:start": "pnpm --filter showcase start",
+    "docs:dev": "turbo run dev --filter=docs...",
+    "docs:build": "turbo run build --filter=docs...",
+    "docs:start": "pnpm --filter docs start",
     "changeset": "changeset",
-    "version-packages": "changeset version"
+    "version-packages": "changeset version",
+    "release": "turbo run build --filter=@truvar-ai/design-system && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
     "turbo": "2.11.8"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

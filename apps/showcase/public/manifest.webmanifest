@@ -1,0 +1,17 @@
+{
+  "name": "Truvar Design System",
+  "short_name": "Truvar DS",
+  "description": "Every Truvar component, in English and Arabic, light and dark.",
+  "id": "/",
+  "start_url": "/#overview",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f5f0",
+  "theme_color": "#f7f5f0",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

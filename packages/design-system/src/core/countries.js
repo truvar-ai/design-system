@@ -1,25 +1,21 @@
-// Countries: ISO codes and dialling codes from libphonenumber-js, names from the browser's Intl API
-// (CLDR data, so every country has a proper English and Arabic name with no extra dataset).
+// Countries: ISO codes and dialling codes from libphonenumber-js, English and Arabic names from CLDR.
+// The names are generated into country-names.js (scripts/build-countries.mjs), so the server and every browser
+// show the same names in the same order; names read live from Intl differ between engines.
 import { getCountries, getCountryCallingCode } from "libphonenumber-js/max";
-
-const nameIn = (locale) => {
-  let dn;
-  try { dn = new Intl.DisplayNames([locale], { type: "region" }); } catch { dn = null; }
-  return (code) => { try { return dn?.of(code) ?? code; } catch { return code; } };
-};
-const en = /* @__PURE__ */ nameIn("en"), ar = /* @__PURE__ */ nameIn("ar");
+import { NAMES, ORDER } from "./country-names.js";
 
 // Pure IIFE: bundlers drop the list (and libphonenumber) from apps that never use it
 export const COUNTRIES = /* @__PURE__ */ (() => getCountries().map((code) => ({
   code,
   dial: getCountryCallingCode(code),
-  en: en(code),
-  ar: ar(code),
+  en: NAMES[code]?.[0] ?? code,
+  ar: NAMES[code]?.[1] ?? code,
 })))();
 
 export function sortedCountries(lang = "en") {
-  const key = lang === "ar" ? "ar" : "en";
-  return [...COUNTRIES].sort((a, b) => a[key].localeCompare(b[key], lang));
+  const order = ORDER[lang === "ar" ? "ar" : "en"];
+  const rank = new Map(order.map((c, i) => [c, i]));
+  return [...COUNTRIES].sort((a, b) => (rank.get(a.code) ?? 1e4) - (rank.get(b.code) ?? 1e4));
 }
 export const countryByCode = (code) => COUNTRIES.find((c) => c.code === code);
 

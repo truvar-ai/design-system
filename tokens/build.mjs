@@ -1,5 +1,6 @@
 // Builds every token output from the DTCG files in this folder.
 // Light values live in $value; dark values in $extensions["ai.truvar.modes"].dark.
+// Each brands/<name>.tokens.json overrides some of those tokens; it builds into a [data-brand="<name>"] block.
 import fs from "node:fs";
 import StyleDictionary from "style-dictionary";
 
@@ -53,9 +54,10 @@ StyleDictionary.registerPreprocessor({
   },
 });
 
-async function tokensFor(mode) {
+async function tokensFor(mode, brand) {
   const sd = new StyleDictionary({
-    source: ["*.tokens.json"],
+    include: brand ? ["*.tokens.json"] : [],
+    source: brand ? [`brands/${brand}.tokens.json`] : ["*.tokens.json"],
     preprocessors: mode === "dark" ? ["truvar/dark"] : [],
     platforms: { css: { transforms: ["truvar/name", "truvar/css"] } },
     log: { verbosity: "silent" },
@@ -68,8 +70,42 @@ async function tokensFor(mode) {
 
 const light = await tokensFor("light");
 const dark = await tokensFor("dark");
+const map = (list) => Object.fromEntries(list.map((t) => [t.name, t.value]));
+const json = { light: map(light), dark: { ...map(light), ...map(dark) } };
+
+// A brand block lists only what differs from the base. Its dark blocks repeat every name its light block sets,
+// because the light block would otherwise win over the base dark values.
+const BRANDS = fs.readdirSync("brands").filter((f) => f.endsWith(".tokens.json")).map((f) => f.replace(".tokens.json", ""));
+const brands = {};
+for (const name of BRANDS) {
+  const l = map(await tokensFor("light", name));
+  const d = { ...l, ...map(await tokensFor("dark", name)) };
+  const lightDiff = Object.keys(l).filter((k) => l[k] !== json.light[k]);
+  const darkDiff = Object.keys(d).filter((k) => lightDiff.includes(k) || d[k] !== json.dark[k]);
+  brands[name] = {
+    light: Object.fromEntries(lightDiff.map((k) => [k, l[k]])),
+    dark: Object.fromEntries(darkDiff.map((k) => [k, d[k]])),
+    resolved: { light: l, dark: d },
+  };
+}
+
 const decls = (list, indent) => list.map((t) => `${indent}--${t.name}: ${t.value};`).join("\n");
+const declsOf = (obj, indent) => decls(Object.entries(obj).map(([name, value]) => ({ name, value })), indent);
 const HEADER = "/* Truvar design tokens. Generated from tokens/*.tokens.json — do not edit. */";
+
+const brandCss = (name, { light: l, dark: d }) => `
+:root[data-brand="${name}"] {
+${declsOf(l, "  ")}
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-brand="${name}"]:not([data-theme="light"]) {
+${declsOf(d, "    ")}
+  }
+}
+:root[data-brand="${name}"][data-theme="dark"] {
+${declsOf(d, "  ")}
+}
+`;
 
 const css = `${HEADER}
 :root {
@@ -86,13 +122,14 @@ ${decls(dark, "    ")}
 ${decls(dark, "  ")}
   color-scheme: dark;
 }
-`;
-const map = (list) => Object.fromEntries(list.map((t) => [t.name, t.value]));
-const json = { light: map(light), dark: { ...map(light), ...map(dark) } };
+${BRANDS.map((n) => brandCss(n, brands[n])).join("")}`;
+const brandValues = Object.fromEntries(BRANDS.map((n) => [n, brands[n].resolved]));
+const out = { ...json, brands: brandValues };
 
 fs.mkdirSync(OUT, { recursive: true });
 fs.writeFileSync(`${OUT}/tokens.css`, css);
-fs.writeFileSync(`${OUT}/tokens.json`, JSON.stringify(json, null, 2) + "\n");
+fs.writeFileSync(`${OUT}/tokens.json`, JSON.stringify(out, null, 2) + "\n");
 fs.writeFileSync(`${OUT}/tokens.js`,
-  `// Generated from tokens/*.tokens.json — do not edit.\nexport const light = ${JSON.stringify(json.light, null, 2)};\nexport const dark = ${JSON.stringify(json.dark, null, 2)};\nexport default { light, dark };\n`);
-console.log(`tokens: ${light.length} light, ${dark.length} dark overrides → ${OUT}/`);
+  `// Generated from tokens/*.tokens.json — do not edit.\nexport const light = ${JSON.stringify(json.light, null, 2)};\nexport const dark = ${JSON.stringify(json.dark, null, 2)};\n` +
+  `// Every token of each brand, resolved: brands.easysocials.dark["primary"]\nexport const brands = ${JSON.stringify(brandValues, null, 2)};\nexport default { light, dark, brands };\n`);
+console.log(`tokens: ${light.length} light, ${dark.length} dark overrides, brands: ${BRANDS.map((n) => `${n} (${Object.keys(brands[n].light).length})`).join(", ") || "none"} → ${OUT}/`);

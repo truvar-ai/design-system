@@ -2,18 +2,43 @@
 import React from "react";
 import * as RAC from "react-aria-components";
 import { WORDMARK_LIGHT, WORDMARK_DARK, MONOGRAM_LIGHT, MONOGRAM_DARK } from "./logo-assets.js";
+import { EasySocialsMark } from "./EasySocials.jsx";
 
 const cx = (...c) => c.filter(Boolean).join(" ");
 
+/* ---------- Brand ---------- */
+// The brand theme: "truvar" (default) or "easysocials". Colours follow data-brand on <html>;
+// BrandProvider tells the components that draw brand art (Logo) which one to draw.
+export const BRANDS = { truvar: "Truvar.ai", easysocials: "EasySocials" };
+const BrandContext = React.createContext("truvar");
+export const useBrand = () => React.useContext(BrandContext);
+export function BrandProvider({ brand = "truvar", children }) {
+  return <BrandContext.Provider value={brand}>{children}</BrandContext.Provider>;
+}
+
 /* ---------- Logo ---------- */
 // variant: "wordmark" | "monogram". tone: "auto" follows the theme; "onDark" forces reversed art.
-export function Logo({ variant = "wordmark", tone = "auto", width, className }) {
+// brand: defaults to the BrandProvider's.
+export function Logo({ variant = "wordmark", tone = "auto", width, className, brand }) {
+  const current = useBrand();
+  if ((brand ?? current) === "easysocials") return <EasySocialsLogo {...{ variant, tone, width, className }} />;
   const [light, dark] = variant === "monogram" ? [MONOGRAM_LIGHT, MONOGRAM_DARK] : [WORDMARK_LIGHT, WORDMARK_DARK];
   const w = width ?? (variant === "monogram" ? 24 : 120);
   return (
     <span className={cx("tv-logo", className)} data-tone={tone} style={{ width: w }} role="img" aria-label="Truvar.ai">
       <img className="is-light" src={light} alt="" />
       <img className="is-dark" src={dark} alt="" />
+    </span>
+  );
+}
+// Mark plus the name set in the display face, until there is a drawn wordmark.
+function EasySocialsLogo({ variant, tone, width, className }) {
+  const w = width ?? (variant === "monogram" ? 24 : 120);
+  return (
+    <span className={cx("tv-logo", "tv-logo--es", className)} data-tone={tone} data-variant={variant}
+      style={{ width: w }} role="img" aria-label="EasySocials">
+      <EasySocialsMark size={variant === "monogram" ? w : Math.round(w * 0.22)} />
+      {variant !== "monogram" && <span className="tv-logo-name" aria-hidden="true">EasySocials</span>}
     </span>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+"use client";
+import { useState, useMemo } from "react";
 import {
   Table, TableHeader, Column, TableBody, Row, Cell, SelectionColumn, DragColumn, ResizableTable, Tree, TreeItem,
   Badge, Avatar, Button, MenuButton, MenuItem, EmptyState, OrbitLoader, ToggleButtonGroup, SegmentButton, toast,

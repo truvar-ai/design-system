@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Logo, BrandAvatar, OrbitMark, OrbitLoader, SearchField, Button, Badge } from "../../ds.js";
+"use client";
+import { useState } from "react";
+import { useBrand, Logo, BrandAvatar, OrbitMark, OrbitLoader, SearchField, Button } from "../../ds.js";
 import * as Icon from "@truvar-ai/design-system/icons";
+import { brands } from "@truvar-ai/design-system/tokens";
 import { useTr, useT, useLang } from "../i18n.jsx";
 import { Spec, ViewHeader } from "../ui.jsx";
 import { TYPE_SAMPLES } from "../../strings.js";
@@ -25,12 +27,14 @@ const COLORS = [
 export function Colors() {
   const tr = useTr();
   const lang = useLang();
+  // Values below are Truvar's; another brand shows its own from the token build.
+  const own = brands[useBrand()];
   return (
     <>
       <ViewHeader viewId="colors" intro={tr("Navy carries the brand, gold marks the moment of value. Every component reads these tokens, so light, dark and future themes come for free.", "الكحلي يحمل الهوية والذهبي يميز لحظة القيمة. كل المكونات تقرأ هذه الرموز، فتأتي الأوضاع الفاتحة والداكنة وأي أوضاع مستقبلية دون جهد إضافي.")} />
       <Spec id="color-tokens" name={tr("Colour tokens", "رموز الألوان")} primitive="tokens.css" note={tr("Swatches show the current theme. Values list light, then dark.", "العينات تعرض الوضع الحالي. القيم: الفاتح ثم الداكن.")} wide>
         <div className="swatch-grid">
-          {COLORS.map(([name, light, dark, use]) => (
+          {COLORS.map(([name, light, dark, use]) => (own ? [name, own.light[name] ?? light, own.dark[name] ?? dark, use] : [name, light, dark, use])).map(([name, light, dark, use]) => (
             <div className="swatch-card" key={name}>
               <span className="swatch-chip" style={{ background: `var(--${name})` }} />
               <div className="swatch-meta">

@@ -1,5 +1,4 @@
 // Flag: SVG country flags from country-flag-icons (MIT). 3:2 rectangle by default, or a circle.
-import React from "react";
 import * as Flags3x2 from "country-flag-icons/react/3x2";
 import * as Flags1x1 from "country-flag-icons/react/1x1";
 
