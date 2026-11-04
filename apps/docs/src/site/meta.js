@@ -33,6 +33,10 @@ const GUIDES = {
     en: "Arabic and right-to-left layouts: setup, what mirrors automatically, Arabic fonts, and keeping phone numbers and code left to right.",
     ar: "العربية والكتابة من اليمين لليسار: الإعداد، وما ينعكس تلقائيًا، والخطوط العربية، وإبقاء الأرقام والأكواد من اليسار لليمين.",
   },
+  cursors: {
+    en: "Free Truvar OS mouse cursors for Windows and Linux in Truvar Blue or Gold, with an animated loading orbit, and the Truvar pointer colours on macOS.",
+    ar: "مؤشرات فأرة Truvar OS مجانية لـ Windows و Linux بالأزرق أو الذهبي مع مدار تحميل متحرك، وألوان مؤشر Truvar على macOS.",
+  },
   mobile: {
     en: "Native-feeling phones: viewport setup, touch feedback, finger-sized targets, bottom navigation, sheets, push menu and system bars.",
     ar: "تجربة أصلية على الهواتف: إعداد منفذ العرض، واستجابة اللمس، وأهداف بحجم الإصبع، وشريط التنقل السفلي، والأوراق، والقائمة الجانبية، وأشرطة النظام.",

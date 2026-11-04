@@ -24,8 +24,8 @@ export function useOtherLanguage() {
 export function useLinks() {
   const { lang, tr } = useSite();
   return [
-    { href: localePath(lang, "/docs/"), label: tr("Docs", "التوثيق"), match: /\/docs\/?$|\/docs\/(installation|nextjs|theming|rtl|mobile)/ },
-    { href: localePath(lang, "/docs/buttons/"), label: tr("Components", "المكونات"), match: /\/docs\/(?!installation|nextjs|theming|rtl|mobile|overview|dashboard|conversations|contacts|opportunities|schedule|team)[^/]+/ },
+    { href: localePath(lang, "/docs/"), label: tr("Docs", "التوثيق"), match: /\/docs\/?$|\/docs\/(installation|nextjs|theming|rtl|mobile|cursors)/ },
+    { href: localePath(lang, "/docs/buttons/"), label: tr("Components", "المكونات"), match: /\/docs\/(?!installation|nextjs|theming|rtl|mobile|cursors|overview|dashboard|conversations|contacts|opportunities|schedule|team)[^/]+/ },
     { href: localePath(lang, "/docs/overview/"), label: tr("Examples", "أمثلة"), match: /\/docs\/(overview|dashboard|conversations|contacts|opportunities|schedule|team)/ },
   ];
 }

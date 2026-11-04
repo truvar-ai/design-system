@@ -11,6 +11,7 @@ const GUIDES = {
     { id: "theming", name: ["Themes and tokens", "السمات والرموز"], icon: "Palette", guide: true },
     { id: "rtl", name: ["Arabic and RTL", "العربية والاتجاه"], icon: "Globe", guide: true },
     { id: "mobile", name: ["Phones and touch", "الهواتف واللمس"], icon: "PhoneDeviceIcon", guide: true },
+    { id: "cursors", name: ["Cursors for your computer", "مؤشرات لجهازك"], icon: "Cursor", guide: true },
   ],
 };
 

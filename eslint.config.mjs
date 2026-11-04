@@ -43,7 +43,7 @@ export default [
   },
   // Build scripts and config files run in Node
   {
-    files: ["**/scripts/**", "**/*.config.{js,mjs}", "tokens/**", "apps/docs/app/**/*.js"],
+    files: ["**/scripts/**", "**/*.config.{js,mjs}", "tokens/**", "packages/cursors/**", "apps/docs/app/**/*.js"],
     languageOptions: { globals: { ...globals.node } },
   },
   // The showcase service worker

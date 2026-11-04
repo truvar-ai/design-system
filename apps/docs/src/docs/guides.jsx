@@ -1,7 +1,11 @@
 "use client";
 // The written guides. Each one lists its sections (for "On this page") and its body, in English and Arabic.
+import { useEffect, useState } from "react";
 import NextLink from "next/link";
+import { SegmentedControl, Badge } from "@truvar-ai/design-system";
 import * as Icon from "@truvar-ai/design-system/icons";
+import { siApple, siLinux } from "simple-icons";
+import CURSORS from "./cursors.json";
 import { useSite } from "../site/Providers.jsx";
 import { Code, Command } from "../site/ui.jsx";
 import { PACKAGE, localePath } from "../site/config.js";
@@ -280,4 +284,141 @@ function Mobile() {
 }
 Mobile.sections = [["viewport", "Viewport", "منفذ العرض"], ["built-in", "Built in", "مدمج"], ["patterns", "Phone patterns", "أنماط الهاتف"]];
 
-export const GUIDES = { "": Introduction, installation: Installation, nextjs: NextGuide, theming: Theming, rtl: Rtl, mobile: Mobile };
+/* ---------- Cursors ----------
+   The files come from packages/cursors (`pnpm cursors:build`), which also writes cursors.json. */
+// "1.3 MB" stays on one line and left to right inside Arabic text
+const MB = (bytes) => `\u2066${(bytes / 1048576).toFixed(1)}\u00a0MB\u2069`;
+const OS_ICON = {
+  windows: "M3 3h8.5v8.5H3zM12.5 3H21v8.5h-8.5zM3 12.5h8.5V21H3zM12.5 12.5H21V21h-8.5z",
+  linux: siLinux.path,
+  macos: siApple.path,
+};
+const OsIcon = ({ os }) => <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="currentColor"><path d={OS_ICON[os]} /></svg>;
+
+// The visitor's computer, once the page runs in the browser. Phones and tablets have no pointer to change.
+function useDesktopOS() {
+  const [os, setOs] = useState(null);
+  useEffect(() => {
+    const ua = `${navigator.userAgentData?.platform ?? ""} ${navigator.userAgent}`.toLowerCase();
+    if (/android|iphone|ipad/.test(ua)) return;
+    setOs(/win/.test(ua) ? "windows" : /mac/.test(ua) ? "macos" : /linux|x11|cros/.test(ua) ? "linux" : null);
+  }, []);
+  return os;
+}
+
+// Every cursor in the chosen colour. Pointing at a tile turns the page's pointer into that cursor.
+function CursorPreview() {
+  const { tr, lang } = useSite();
+  const [palette, setPalette] = useState("blue");
+  const name = (c) => c.label[lang === "ar" ? 1 : 0];
+  return (
+    <div className="dx-cursors">
+      <div className="dx-cursors-bar">
+        <span className="dx-cursors-hint">{tr("Point at a cursor to try it.", "مرّر الفأرة على أي مؤشر لتجربته.")}</span>
+        <SegmentedControl aria-label={tr("Colour", "اللون")} value={palette} onChange={setPalette}
+          options={[{ id: "blue", label: tr("Blue", "الأزرق") }, { id: "gold", label: tr("Gold", "الذهبي") }, { id: "duo", label: tr("Duo", "ثنائي") }]} />
+      </div>
+      <ul className="dx-cursors-grid">
+        {CURSORS.cursors.map((c) => {
+          const base = `/cursors/${palette}/${c.id}`;
+          return (
+            <li key={c.id} className="dx-cursor" style={{ cursor: `url(${base}-32.png) ${Math.round(c.hotspot[0])} ${Math.round(c.hotspot[1])}, auto` }}>
+              {c.frames > 1
+                ? <span className="dx-cursor-anim" role="img" aria-label={name(c)} style={{ backgroundImage: `url(${base}-strip.png)`, "--frames": c.frames }} />
+                : <img src={`${base}.png`} width="64" height="64" alt="" />}
+              <span className="dx-cursor-name">{name(c)}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function DownloadCard({ os, title, detail, recommended, children }) {
+  const { tr } = useSite();
+  return (
+    <div className="dx-download" data-recommended={recommended || undefined}>
+      <span className="dx-download-icon"><OsIcon os={os} /></span>
+      <div className="dx-download-text">
+        <div className="dx-download-head">
+          <b>{title}</b>
+          {recommended && <Badge tone="success">{tr("Your computer", "جهازك")}</Badge>}
+        </div>
+        <p>{detail}</p>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Cursors() {
+  const { tr } = useSite();
+  const os = useDesktopOS();
+  // Duo shows both colours: the fill and its gold band
+  const swatch = (k) => <span className="dx-swatch" style={{ background: CURSORS.palettes[k].fill, ...(k === "duo" && { boxShadow: `0 0 0 2px ${CURSORS.palettes[k].accent}, 0 0 0 3px var(--border)` }) }} aria-hidden="true" />;
+  const n = CURSORS.cursors.length;
+  return (
+    <>
+      <p className="dx-lead">{tr("The Truvar OS mouse cursors for your own computer, free: Truvar Blue, Truvar Gold, or Truvar Duo with both colours, in solid shapes with the orbit as the loading animation.", "مؤشرات فأرة Truvar OS لجهازك مجانًا: بالأزرق أو الذهبي أو الثنائي باللونين معًا، بأشكال مصمتة والمدار كحركة التحميل.")}</p>
+      <H2 id="preview">{tr("Preview", "معاينة")}</H2>
+      <CursorPreview />
+      <p>{tr(`${n} cursors in each of the three colours, sharp at every size from 24 to 256 pixels. Busy and Working in background turn like the OrbitLoader.`, `${n} مؤشرًا بكل لون من الألوان الثلاثة، واضحة بكل المقاسات من ٢٤ إلى ٢٥٦ بكسل. ومؤشرا مشغول ويعمل في الخلفية يدوران مثل OrbitLoader.`)}</p>
+
+      <H2 id="download">{tr("Download", "التنزيل")}</H2>
+      <div className="dx-downloads">
+        <DownloadCard os="windows" title="Windows" recommended={os === "windows"}
+          detail={tr(`Windows 10 and 11 · all three colours · ${MB(CURSORS.downloads.windows)}`, `Windows 10 و 11 · الألوان الثلاثة · ${MB(CURSORS.downloads.windows)}`)}>
+          <a className="tv-btn tv-btn--primary site-btnlink" href="/downloads/truvar-cursors-windows.zip" download><Icon.Download />{tr("Download for Windows", "تنزيل لـ Windows")}</a>
+        </DownloadCard>
+        <DownloadCard os="linux" title="Linux" recommended={os === "linux"}
+          detail={tr(`GNOME, KDE Plasma and other desktops · all three colours · ${MB(CURSORS.downloads.linux)}`, `GNOME و KDE Plasma وغيرها · الألوان الثلاثة · ${MB(CURSORS.downloads.linux)}`)}>
+          <a className="tv-btn tv-btn--primary site-btnlink" href="/downloads/truvar-cursors-linux.zip" download><Icon.Download />{tr("Download for Linux", "تنزيل لـ Linux")}</a>
+        </DownloadCard>
+        <DownloadCard os="macos" title="macOS" recommended={os === "macos"}
+          detail={tr("Nothing to download: give the pointer the Truvar colours in System Settings.", "لا يوجد ما تنزّله: لوّن المؤشر بألوان Truvar من إعدادات النظام.")}>
+          <a className="tv-btn tv-btn--secondary site-btnlink" href="#macos">{tr("Set up on a Mac", "الإعداد على Mac")}</a>
+        </DownloadCard>
+      </div>
+
+      <H2 id="windows">{tr("Install on Windows", "التثبيت على Windows")}</H2>
+      <ol className="dx-list">
+        <li>{tr("Unzip the download and open the folder of the colour you want: Truvar Blue, Truvar Gold or Truvar Duo.", "فك ضغط الملف وافتح مجلد اللون الذي تريده: Truvar Blue أو Truvar Gold أو Truvar Duo.")}</li>
+        <li>{rich(tr("Right-click `install.inf` and choose Install. On Windows 11, choose Show more options first. Windows asks for permission, because the files go into the Windows folder.", "انقر بالزر الأيمن على `install.inf` واختر Install. في Windows 11 اختر Show more options أولًا. سيطلب Windows الإذن، لأن الملفات تُنسخ إلى مجلد Windows."))}</li>
+        <li>{rich(tr("Open Settings › Bluetooth & devices › Mouse › Additional mouse settings, then the Pointers tab. Or press Windows + R, type `main.cpl ,,1` and press Enter.", "افتح الإعدادات › Bluetooth والأجهزة › الماوس › إعدادات الماوس الإضافية، ثم تبويب المؤشرات. أو اضغط Windows + R واكتب `main.cpl ,,1` ثم Enter."))}</li>
+        <li>{tr("Under Scheme, choose Truvar Blue, Truvar Gold or Truvar Duo, and press OK.", "من قائمة النظام (Scheme) اختر Truvar Blue أو Truvar Gold أو Truvar Duo، ثم اضغط موافق.")}</li>
+      </ol>
+      <Note>{tr("For bigger cursors: Settings › Accessibility › Mouse pointer and touch › Size. To go back, choose Windows Default in the same Pointers tab.", "لمؤشرات أكبر: الإعدادات › تسهيل الاستخدام › مؤشر الماوس واللمس › الحجم. وللرجوع اختر Windows Default من تبويب المؤشرات نفسه.")}</Note>
+
+      <H2 id="linux">{tr("Install on Linux", "التثبيت على Linux")}</H2>
+      <p>{tr("In the folder you downloaded to, run:", "في المجلد الذي نزّلت فيه الملف، شغّل:")}</p>
+      <Command>unzip truvar-cursors-linux.zip -d truvar-cursors && sh truvar-cursors/install.sh</Command>
+      <p>{rich(tr("It installs all three colours for your user and turns on Truvar Blue in GNOME and KDE Plasma. Add `gold` or `duo` at the end for Truvar Gold or Truvar Duo. It doesn't need administrator rights.", "يثبّت الألوان الثلاثة لحسابك ويفعّل Truvar Blue في GNOME و KDE Plasma. أضف `gold` أو `duo` في النهاية للذهبي أو الثنائي. ولا يحتاج صلاحيات المسؤول."))}</p>
+      <Table head={[tr("Desktop", "سطح المكتب"), tr("Where to choose the cursor", "مكان اختيار المؤشر")]} rows={[
+        ["GNOME", tr("Settings › Appearance, or GNOME Tweaks › Appearance › Cursor", "الإعدادات › المظهر، أو GNOME Tweaks › Appearance › Cursor")],
+        ["KDE Plasma", tr("System Settings › Colors & Themes › Cursors", "إعدادات النظام › الألوان والسمات › المؤشرات")],
+        [tr("Others", "غيرها"), tr("Your desktop's appearance settings", "إعدادات المظهر في سطح المكتب")],
+      ]} />
+      <Note>{tr("If an app still shows the old cursor, log out and back in.", "إذا بقي تطبيق يعرض المؤشر القديم، سجّل الخروج ثم الدخول مرة أخرى.")}</Note>
+
+      <H2 id="macos">macOS</H2>
+      <p>{tr("macOS doesn't allow other cursor shapes, so on a Mac you use Apple's own setting to give the pointer the Truvar colours: a fill and an outline from the table below. It works on macOS 12 Monterey and later.", "لا يسمح macOS بتغيير شكل المؤشرات، لذلك على Mac تستخدم إعداد Apple نفسه لتلوين المؤشر بألوان Truvar: تعبئة وإطار من الجدول التالي. ويعمل على macOS 12 Monterey وما بعده.")}</p>
+      <ol className="dx-list">
+        <li>{tr("Open System Settings › Accessibility › Display, and scroll to Pointer.", "افتح إعدادات النظام › تسهيلات الاستخدام › شاشة العرض، ثم انزل إلى المؤشر.")}</li>
+        <li>{tr("Click Pointer outline colour and set the outline from the table. For Blue and Gold it's the same as the fill, so the pointer is one solid colour.", "اضغط لون إطار المؤشر واضبط الإطار من الجدول. في الأزرق والذهبي هو نفس لون التعبئة، فيصبح المؤشر بلون واحد مصمت.")}</li>
+        <li>{tr("Click Pointer fill colour and set the fill from the table.", "اضغط لون تعبئة المؤشر واضبط التعبئة من الجدول.")}</li>
+        <li>{tr("To type a colour: in the colour window, open the sliders tab, choose RGB Sliders, and type it into Hex Colour.", "لكتابة اللون: في نافذة الألوان افتح تبويب أشرطة التمرير، واختر RGB Sliders، واكتبه في خانة Hex Colour.")}</li>
+        <li>{tr("Optional: make it bigger with Pointer size.", "اختياري: كبّره من حجم المؤشر.")}</li>
+      </ol>
+      <Table head={[tr("Colour", "اللون"), tr("Fill", "التعبئة"), tr("Outline", "الإطار")]} rows={[
+        [<span className="dx-swatch-row" key="b">{swatch("blue")}Truvar Blue</span>, "`001250`", "`001250`"],
+        [<span className="dx-swatch-row" key="g">{swatch("gold")}Truvar Gold</span>, "`E0B96A`", "`E0B96A`"],
+        [<span className="dx-swatch-row" key="d">{swatch("duo")}Truvar Duo</span>, "`001250`", "`E0B96A`"],
+      ]} />
+      <Note>{tr("On a Mac the shapes and the spinning loading indicator stay Apple's; only their colours change. Reset puts the default colours back.", "على Mac تبقى الأشكال ومؤشر التحميل الدوار كما صممتها Apple، ويتغير لونها فقط. وزر إعادة التعيين يعيد الألوان الأصلية.")}</Note>
+    </>
+  );
+}
+Cursors.sections = [["preview", "Preview", "معاينة"], ["download", "Download", "التنزيل"], ["windows", "Windows", "Windows"], ["linux", "Linux", "Linux"], ["macos", "macOS", "macOS"]];
+
+export const GUIDES = { "": Introduction, installation: Installation, nextjs: NextGuide, theming: Theming, rtl: Rtl, mobile: Mobile, cursors: Cursors };

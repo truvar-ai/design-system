@@ -1,6 +1,6 @@
 "use client";
 // Demos for the phase 2 components. Each export is a <Spec> placed on the matching docs page.
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import * as RAC from "react-aria-components";
 import {
@@ -379,24 +379,34 @@ export function VirtualTableSpec() {
   return (
     <Spec id="virtual-table" name={tr("10,000 rows", "١٠٬٠٠٠ صف")} primitive="Virtualizer + TableLayout" wide
       note={tr("Only the rows on screen exist in the page, so scrolling stays smooth at any size. Keyboard navigation and screen readers still know the full count.", "الصفوف الظاهرة فقط موجودة في الصفحة، فيبقى التمرير سلسًا مهما كان الحجم. ومع ذلك يعرف التنقل بلوحة المفاتيح وقارئات الشاشة العدد الكامل.")}>
-      <Virtualizer layout={TableLayout} layoutOptions={{ rowHeight: 44, headingHeight: 40 }}>
-        <Table aria-label={tr("All contacts", "كل جهات الاتصال")} className="tv-virtual tv-virtual-table">
-          <TableHeader>
-            <Column isRowHeader width="2fr">{tr("Name", "الاسم")}</Column>
-            <Column width="2fr">{tr("Company", "الشركة")}</Column>
-            <Column width="1fr" align="end">{tr("Lead score", "تقييم العميل")}</Column>
-            <Column width="1fr" align="end">#</Column>
-          </TableHeader>
-          <TableBody items={BIG}>
-            {(r) => <Row id={r.id}><Cell>{L(r.c)}</Cell><Cell>{r.c.company}</Cell><Cell align="end">{f.number(r.score)}</Cell><Cell align="end"><span className="tv-desc">{f.number(r.id)}</span></Cell></Row>}
-          </TableBody>
-        </Table>
-      </Virtualizer>
+      <InBrowser>
+        <Virtualizer layout={TableLayout} layoutOptions={{ rowHeight: 44, headingHeight: 40 }}>
+          <Table aria-label={tr("All contacts", "كل جهات الاتصال")} className="tv-virtual tv-virtual-table">
+            <TableHeader>
+              <Column isRowHeader width="2fr">{tr("Name", "الاسم")}</Column>
+              <Column width="2fr">{tr("Company", "الشركة")}</Column>
+              <Column width="1fr" align="end">{tr("Lead score", "تقييم العميل")}</Column>
+              <Column width="1fr" align="end">#</Column>
+            </TableHeader>
+            <TableBody items={BIG}>
+              {(r) => <Row id={r.id}><Cell>{L(r.c)}</Cell><Cell>{r.c.company}</Cell><Cell align="end">{f.number(r.score)}</Cell><Cell align="end"><span className="tv-desc">{f.number(r.id)}</span></Cell></Row>}
+            </TableBody>
+          </Table>
+        </Virtualizer>
+      </InBrowser>
     </Spec>
   );
 }
 
 /* ---------------- Large collections page ---------------- */
+// Virtualized collections need the real scroll box to lay out, and on the server there is none: the table
+// layout never finishes there. So the server (and hydration) draw an empty box of the same size, and the
+// browser fills it in. Only the example is browser-only; the components work the same in any app.
+const noop = () => () => {};
+function InBrowser({ children }) {
+  const browser = useSyncExternalStore(noop, () => true, () => false);
+  return browser ? children : <div className="tv-virtual" aria-hidden="true" />;
+}
 const SWATCH = ["#001250", "#916625", "#e0b96a", "#4a5578", "#1f6f4a", "#c39a4c", "#6b7494", "#b3261e"];
 const GALLERY = Array.from({ length: 2000 }, (_, i) => ({ id: i + 1, color: SWATCH[i % SWATCH.length], h: 90 + ((i * 53) % 120) }));
 export function VirtualListSpec() {
@@ -404,17 +414,19 @@ export function VirtualListSpec() {
   return (
     <Spec id="virtual-list" name={tr("Virtualized list", "قائمة افتراضية")} primitive="Virtualizer + ListLayout + ListBox"
       note={tr("10,000 contacts. Type a letter to jump; Shift-click selects a range.", "١٠٬٠٠٠ جهة اتصال. اكتب حرفًا للانتقال، والضغط مع Shift يحدد نطاقًا.")}>
-      <Virtualizer layout={ListLayout} layoutOptions={{ rowHeight: 52 }}>
-        <RAC.ListBox aria-label={tr("Contacts", "جهات الاتصال")} items={BIG} selectionMode="multiple" className="tv-virtual">
-          {(r) => (
-            <RAC.ListBoxItem id={r.id} textValue={L(r.c)} className="tv-virtual-row">
-              <Avatar name={L(r.c)} size={28} />
-              <span className="gl-text"><b>{L(r.c)}</b><span className="tv-desc">{r.c.company}</span></span>
-              <span className="tv-desc" style={{ marginInlineStart: "auto" }}>#{f.number(r.id)}</span>
-            </RAC.ListBoxItem>
-          )}
-        </RAC.ListBox>
-      </Virtualizer>
+      <InBrowser>
+        <Virtualizer layout={ListLayout} layoutOptions={{ rowHeight: 52 }}>
+          <RAC.ListBox aria-label={tr("Contacts", "جهات الاتصال")} items={BIG} selectionMode="multiple" className="tv-virtual">
+            {(r) => (
+              <RAC.ListBoxItem id={r.id} textValue={L(r.c)} className="tv-virtual-row">
+                <Avatar name={L(r.c)} size={28} />
+                <span className="gl-text"><b>{L(r.c)}</b><span className="tv-desc">{r.c.company}</span></span>
+                <span className="tv-desc" style={{ marginInlineStart: "auto" }}>#{f.number(r.id)}</span>
+              </RAC.ListBoxItem>
+            )}
+          </RAC.ListBox>
+        </Virtualizer>
+      </InBrowser>
     </Spec>
   );
 }
@@ -423,16 +435,18 @@ export function VirtualGridSpec() {
   return (
     <Spec id="virtual-grid" name={tr("Grid layout", "تخطيط شبكي")} primitive="Virtualizer + GridLayout + ListBox"
       note={tr("2,000 cards in responsive columns. Arrow keys move in two dimensions.", "٢٬٠٠٠ بطاقة في أعمدة متجاوبة. مفاتيح الأسهم تتحرك في اتجاهين.")}>
-      <Virtualizer layout={GridLayout} layoutOptions={{ minItemSize: new RAC.Size(140, 120), minSpace: new RAC.Size(12, 12) }}>
-        <RAC.ListBox aria-label={tr("Voice samples", "عينات الأصوات")} items={GALLERY} layout="grid" selectionMode="multiple" className="tv-virtual">
-          {(g) => (
-            <RAC.ListBoxItem id={g.id} textValue={`${g.id}`} className="tv-gallery-card">
-              <span className="tv-gallery-swatch" style={{ background: g.color }} />
-              <span className="tv-desc">{tr("Sample", "عينة")} {f.number(g.id)}</span>
-            </RAC.ListBoxItem>
-          )}
-        </RAC.ListBox>
-      </Virtualizer>
+      <InBrowser>
+        <Virtualizer layout={GridLayout} layoutOptions={{ minItemSize: new RAC.Size(140, 120), minSpace: new RAC.Size(12, 12) }}>
+          <RAC.ListBox aria-label={tr("Voice samples", "عينات الأصوات")} items={GALLERY} layout="grid" selectionMode="multiple" className="tv-virtual">
+            {(g) => (
+              <RAC.ListBoxItem id={g.id} textValue={`${g.id}`} className="tv-gallery-card">
+                <span className="tv-gallery-swatch" style={{ background: g.color }} />
+                <span className="tv-desc">{tr("Sample", "عينة")} {f.number(g.id)}</span>
+              </RAC.ListBoxItem>
+            )}
+          </RAC.ListBox>
+        </Virtualizer>
+      </InBrowser>
     </Spec>
   );
 }
@@ -441,16 +455,18 @@ export function MasonrySpec() {
   return (
     <Spec id="masonry" name={tr("Masonry layout", "تخطيط متدرج")} primitive="Virtualizer + WaterfallLayout + ListBox"
       note={tr("Cards of different heights packed into columns, like a board of call notes.", "بطاقات بارتفاعات مختلفة مرتبة في أعمدة، مثل لوحة ملاحظات المكالمات.")}>
-      <Virtualizer layout={WaterfallLayout} layoutOptions={{ minItemSize: new RAC.Size(160, 80), minSpace: new RAC.Size(12, 12) }}>
-        <RAC.ListBox aria-label={tr("Call notes", "ملاحظات المكالمات")} items={GALLERY} layout="grid" className="tv-virtual">
-          {(g) => (
-            <RAC.ListBoxItem id={g.id} textValue={`${g.id}`} className="tv-gallery-card" style={{ height: g.h }}>
-              <span className="tv-gallery-swatch" style={{ background: g.color, flex: "none", height: g.h - 56 }} />
-              <span className="tv-desc">{tr("Note", "ملاحظة")} {f.number(g.id)}</span>
-            </RAC.ListBoxItem>
-          )}
-        </RAC.ListBox>
-      </Virtualizer>
+      <InBrowser>
+        <Virtualizer layout={WaterfallLayout} layoutOptions={{ minItemSize: new RAC.Size(160, 80), minSpace: new RAC.Size(12, 12) }}>
+          <RAC.ListBox aria-label={tr("Call notes", "ملاحظات المكالمات")} items={GALLERY} layout="grid" className="tv-virtual">
+            {(g) => (
+              <RAC.ListBoxItem id={g.id} textValue={`${g.id}`} className="tv-gallery-card" style={{ height: g.h }}>
+                <span className="tv-gallery-swatch" style={{ background: g.color, flex: "none", height: g.h - 56 }} />
+                <span className="tv-desc">{tr("Note", "ملاحظة")} {f.number(g.id)}</span>
+              </RAC.ListBoxItem>
+            )}
+          </RAC.ListBox>
+        </Virtualizer>
+      </InBrowser>
     </Spec>
   );
 }

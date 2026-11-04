@@ -83,6 +83,7 @@ packages/design-system/   @truvar-ai/design-system on npm
   src/os/                 Truvar OS kit
   src/crm/                conversations, AI handoff, contacts, roles and permissions
   src/widget/             website assistant
+packages/cursors/         Truvar OS mouse cursors for Windows and Linux (the downloads on the docs site)
 apps/showcase/            internal playground: every component in English and Arabic, light and dark
 apps/docs/                design-system.truvar.ai: landing page and docs (Next.js, static), built with the design system;
                           component pages reuse the showcase demos
@@ -107,6 +108,7 @@ pnpm docs:start       # serves that build: http://localhost:3001
 
 pnpm build            # builds everything
 pnpm lint             # checks the code (bugs, hook rules, accessibility)
+pnpm cursors:build    # rebuilds the cursor downloads after a shape changes
 ```
 
 **Tokens:** edit the files in `tokens/`, never the generated CSS. Light values live in `$value`, dark values in `$extensions["ai.truvar.modes"].dark`. `pnpm build` regenerates `tokens.css`, `tokens.json` and `tokens.js`.

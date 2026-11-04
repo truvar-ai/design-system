@@ -1,0 +1,13 @@
+{
+  "name": "@truvar-ai/cursors",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Truvar OS mouse cursors for Windows and Linux, in Truvar Blue, Gold and Duo. Builds the downloads served by the docs site.",
+  "type": "module",
+  "scripts": {
+    "build:cursors": "node build.mjs"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "2.6.2"
+  }
+}

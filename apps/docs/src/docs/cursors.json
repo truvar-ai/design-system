@@ -1,0 +1,230 @@
+{
+  "version": "1.0.0",
+  "palettes": {
+    "blue": {
+      "name": "Truvar Blue",
+      "fill": "#001250",
+      "accent": "#e0b96a"
+    },
+    "gold": {
+      "name": "Truvar Gold",
+      "fill": "#e0b96a",
+      "accent": "#001250"
+    },
+    "duo": {
+      "name": "Truvar Duo",
+      "fill": "#001250",
+      "accent": "#e0b96a"
+    }
+  },
+  "cursors": [
+    {
+      "id": "pointer",
+      "label": [
+        "Normal select",
+        "التحديد العادي"
+      ],
+      "hotspot": [
+        3,
+        2
+      ],
+      "frames": 1
+    },
+    {
+      "id": "help",
+      "label": [
+        "Help",
+        "المساعدة"
+      ],
+      "hotspot": [
+        3,
+        2
+      ],
+      "frames": 1
+    },
+    {
+      "id": "working",
+      "label": [
+        "Working in background",
+        "يعمل في الخلفية"
+      ],
+      "hotspot": [
+        3,
+        2
+      ],
+      "frames": 12
+    },
+    {
+      "id": "busy",
+      "label": [
+        "Busy",
+        "مشغول"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 12
+    },
+    {
+      "id": "precision",
+      "label": [
+        "Precision select",
+        "التحديد الدقيق"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "text",
+      "label": [
+        "Text select",
+        "تحديد النص"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "pen",
+      "label": [
+        "Handwriting",
+        "الكتابة اليدوية"
+      ],
+      "hotspot": [
+        6.81,
+        25.19
+      ],
+      "frames": 1
+    },
+    {
+      "id": "unavailable",
+      "label": [
+        "Unavailable",
+        "غير متاح"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "resize-ns",
+      "label": [
+        "Vertical resize",
+        "تغيير الحجم رأسيًا"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "resize-ew",
+      "label": [
+        "Horizontal resize",
+        "تغيير الحجم أفقيًا"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "resize-nwse",
+      "label": [
+        "Diagonal resize 1",
+        "تغيير الحجم قطريًا 1"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "resize-nesw",
+      "label": [
+        "Diagonal resize 2",
+        "تغيير الحجم قطريًا 2"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "move",
+      "label": [
+        "Move",
+        "النقل"
+      ],
+      "hotspot": [
+        16,
+        16
+      ],
+      "frames": 1
+    },
+    {
+      "id": "alternate",
+      "label": [
+        "Alternate select",
+        "التحديد البديل"
+      ],
+      "hotspot": [
+        16,
+        3
+      ],
+      "frames": 1
+    },
+    {
+      "id": "link",
+      "label": [
+        "Link select",
+        "تحديد الرابط"
+      ],
+      "hotspot": [
+        12.9,
+        2.6
+      ],
+      "frames": 1
+    },
+    {
+      "id": "location",
+      "label": [
+        "Location select",
+        "تحديد الموقع"
+      ],
+      "hotspot": [
+        3,
+        2
+      ],
+      "frames": 1
+    },
+    {
+      "id": "person",
+      "label": [
+        "Person select",
+        "تحديد شخص"
+      ],
+      "hotspot": [
+        3,
+        2
+      ],
+      "frames": 1
+    }
+  ],
+  "downloads": {
+    "windows": 1005577,
+    "linux": 330307
+  }
+}

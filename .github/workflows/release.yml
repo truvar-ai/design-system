@@ -26,13 +26,13 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - uses: changesets/action@v1
+      # v2 reads the output of Changesets CLI v3 (v1 doesn't: it publishes, then skips the tag and GitHub release)
+      - uses: changesets/action@v2.1.2
         with:
-          version: pnpm version-packages
-          publish: pnpm release
-          title: Version packages
-          commit: Version packages
-          createGithubReleases: true
+          version-script: pnpm version-packages
+          publish-script: pnpm release
+          pr-title: Version packages
+          commit-message: Version packages
+          create-github-releases: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # an npm granular access token, saved in the repo's Actions secrets
