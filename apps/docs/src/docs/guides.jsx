@@ -108,6 +108,10 @@ import "${P}/widget/styles.css";`}</Code>
       <Code lang="jsx" title="main.jsx">{`import "${P}/fonts.css";
 import "${P}/styles.css";`}</Code>
       <Note>{tr("A page downloads only the files its text needs: the English faces for English text, the Arabic faces when Arabic appears. All four are under the SIL Open Font License, included in the package.", "تحمّل الصفحة فقط الملفات التي يحتاجها نصها: الخطوط الإنجليزية للنص الإنجليزي، والعربية عند ظهور نص عربي. والأربعة برخصة SIL Open Font المرفقة مع الحزمة.")}</Note>
+      <H2 id="typescript">{tr("TypeScript", "TypeScript")}</H2>
+      <p>{rich(tr("The package ships its own type declarations for every import path, so there is nothing extra to install except `@types/react`. It needs TypeScript 5.4 or newer and works with `moduleResolution` set to `bundler` or `nodenext`.", "الحزمة تأتي بتعريفات الأنواع لكل مسار استيراد، فلا تحتاج إلى تثبيت شيء إضافي سوى `@types/react`. وتتطلب TypeScript 5.4 أو أحدث، وتعمل مع `moduleResolution` بقيمة `bundler` أو `nodenext`."))}</p>
+      <Code lang="tsx">{`import type { ButtonProps } from "${P}";
+import type { Conversation, ChannelId } from "${P}/crm";`}</Code>
       <H2 id="first-component">{tr("Your first component", "أول مكوّن")}</H2>
       <Code lang="jsx" title="SignUp.jsx">{`import { Button, TextField, PhoneField } from "${P}";
 
@@ -124,7 +128,7 @@ export function SignUp() {
     </>
   );
 }
-Installation.sections = [["requirements", "Requirements", "المتطلبات"], ["install", "Install", "التثبيت"], ["styles", "Add the styles", "أضف الأنماط"], ["fonts", "Load the fonts", "حمّل الخطوط"], ["first-component", "Your first component", "أول مكوّن"]];
+Installation.sections = [["requirements", "Requirements", "المتطلبات"], ["install", "Install", "التثبيت"], ["styles", "Add the styles", "أضف الأنماط"], ["fonts", "Load the fonts", "حمّل الخطوط"], ["typescript", "TypeScript", "TypeScript"], ["first-component", "Your first component", "أول مكوّن"]];
 
 /* ---------- Next.js ---------- */
 function NextGuide() {

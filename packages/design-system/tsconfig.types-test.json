@@ -1,0 +1,16 @@
+{
+  // Consumer type test: imports the package by name, the way an app does, through the "exports" map and dist/*.d.ts.
+  // Needs a build first. Run with `pnpm check:types`. This config: bundler resolution (Next.js, Vite).
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "target": "es2022",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": false,
+    "types": []
+  },
+  "include": ["types-test/**/*.ts", "types-test/**/*.tsx"]
+}
