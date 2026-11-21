@@ -28,3 +28,6 @@ jobs:
         run: pnpm changeset status --since=origin/${{ github.base_ref }}
       - name: Build
         run: pnpm build
+      # The TypeScript declarations must match the runtime exports and type-check as a consumer (bundler and nodenext)
+      - name: Check types
+        run: pnpm check:types

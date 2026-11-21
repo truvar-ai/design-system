@@ -11,6 +11,8 @@ export default [
   {
     ignores: [
       "**/node_modules/**", "**/dist/**", "**/out/**", "**/.next/**", "**/.turbo/**", "**/build/**",
+      // TypeScript declarations and the consumer type test are checked by tsc (pnpm check:types), not ESLint
+      "packages/design-system/types/**", "packages/design-system/types-test/**",
       // generated data
       "packages/design-system/src/core/country-names.js",
     ],

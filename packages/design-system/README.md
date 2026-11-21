@@ -46,6 +46,26 @@ Every component is a client component (`"use client"` is built in), so they work
 
 Heavy dependencies live behind their own import path, and unused components are removed by your bundler, so an app that only uses `Button` doesn't ship charts, maps or the waveform player.
 
+## TypeScript
+
+The package ships its own type declarations for every import path (`@truvar-ai/design-system`, `/brand`, `/icons`, `/charts`, `/voice`, `/os`, `/crm`, `/widget` and `/tokens`), so there is nothing to install apart from `@types/react`. JavaScript projects are unaffected.
+
+- **Requirements:** TypeScript 5.4 or newer and `@types/react` 18.3 or 19 (an optional peer dependency).
+- **Module resolution:** works with `moduleResolution` set to `bundler` (Next.js, Vite) or `nodenext`.
+- **Props types:** every component's props are exported, named after the component, and extend the matching React Aria or DOM props.
+- **Domain types:** the CRM, widget, OS and voice kits export the shapes of their data.
+
+```tsx
+import { Button, type ButtonProps } from "@truvar-ai/design-system";
+import type { Conversation, Message, ChannelId } from "@truvar-ai/design-system/crm";
+
+const channel: ChannelId = "whatsapp";
+
+function ReplyButton(props: ButtonProps) {
+  return <Button variant="secondary" {...props} />;
+}
+```
+
 ## Fonts, Arabic and RTL
 
 The four brand fonts come with the package. Import them once, before the styles:

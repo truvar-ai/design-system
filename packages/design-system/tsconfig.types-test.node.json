@@ -1,0 +1,15 @@
+{
+  // The same consumer type test with Node's ESM resolution (nodenext), for libraries and Node apps.
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "target": "es2022",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "skipLibCheck": false,
+    "types": []
+  },
+  "include": ["types-test/**/*.ts", "types-test/**/*.tsx"]
+}

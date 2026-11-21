@@ -55,6 +55,8 @@ export function SignUp() {
 }
 ```
 
+Types are built in: every import path ships its own TypeScript declarations (TypeScript 5.4 or newer and `@types/react`).
+
 Fonts, themes, Arabic setup and every import path are in the [package README](packages/design-system/README.md).
 
 ## What's included
