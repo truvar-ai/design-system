@@ -19,13 +19,20 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
+          registry-url: https://registry.npmjs.org # writes an .npmrc whose auth token is read from NODE_AUTH_TOKEN
       - run: pnpm install --frozen-lockfile
+      # npm auth: changesets/action v2 no longer writes an .npmrc from NPM_TOKEN (v1 did), so setup-node's
+      # registry-url above creates it and `pnpm release` (changeset publish) authenticates through NODE_AUTH_TOKEN.
+      # Future migration: npm trusted publishing (OIDC, no long-lived token). On npmjs.com, add a trusted publisher
+      # for this package (GitHub Actions, org truvar-ai, repo design-system, workflow release.yml); needs npm CLI
+      # >= 11.5.1 and the id-token permission above. Then drop NODE_AUTH_TOKEN and the NPM_TOKEN secret.
+      # https://docs.npmjs.com/trusted-publishers
       # v2 reads the output of Changesets CLI v3 (v1 doesn't: it publishes, then skips the tag and GitHub release)
       - uses: changesets/action@v2.1.2
         with:
@@ -35,4 +42,5 @@ jobs:
           commit-message: Version packages
           create-github-releases: true
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # read by the .npmrc that setup-node wrote
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # an npm granular access token, saved in the repo's Actions secrets
